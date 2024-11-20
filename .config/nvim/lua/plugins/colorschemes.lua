@@ -3,7 +3,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "nord",
+      colorscheme = "tokyonight",
     },
   },
   {
@@ -15,4 +15,12 @@ return {
   -- Addiotional color schemes
   { "ellisonleao/gruvbox.nvim" },
   { "gbprod/nord.nvim" },
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    opts = {
+      variant = "moon", -- auto, main, moon, or dawn
+      dark_variant = "moon", -- main, moon, or dawn
+    },
+  },
 }
