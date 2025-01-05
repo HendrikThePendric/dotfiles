@@ -1,4 +1,3 @@
-source '/usr/local/lib/node_modules/@hyperupcall/autoenv/activate.sh'
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
@@ -102,13 +101,18 @@ source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
+export NVM_DIR="$HOME/.nvm"
+export DHIS2_HOME="$HOME/.config/dhis2_home"
+export OLLAMA_API_BASE="http://127.0.0.1:11434"
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+  export VISUAL="vim"
+else
+  export EDITOR='nvim'
+  export VISUAL="nvim"
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
@@ -127,9 +131,36 @@ source $ZSH/oh-my-zsh.sh
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 
-alias config='/usr/bin/git --git-dir=/home/hendrik/.mydotfiles/ --work-tree=/home/hendrik'
+alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias v='nvim'
 alias startopenvpn='sudo openvpn --config ~/.openvpn/privado.ovpn --daemon'
 alias stopopenvpn='sudo killall openvpn'
 alias dobbysync='ssh dobby "cd homeserver; ./sync_dobby.sh;"'
+alias nuke-nodemodules="find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
+alias docker-cleanup='docker stop $(docker ps -a -q) && docker system prune --all --volumes --force'
+alias docker-up-dhis2="cd ~/Apps/dhis2-core && docker compose up -d"
+alias docker-logs-dhis2="cd ~/Apps/dhis2-core && docker compose logs web --follow"
+alias ctop="docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock quay.io/vektorlab/ctop:latest"
+alias dive="docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive:latest"
+alias convert_mkv_to_mov='for i in *.mkv; do ffmpeg -i "$i" -c:v prores_ks -profile:v 3 -c:a pcm_s24le "${i%.*}.mov"; done'
+alias custom_build='sed -i '' "s/\"version\": \".*\"/\"version\": \"999.9.9-$(date '+%Y-%m-%dT%H-%M-%S')\"/" package.json && yarn build'
+alias saw='yarn install --force && rm -rf node_modules/@dhis2/analytics/node_modules && npx chokidar-cli "../analytics/build/**/*" -c "rm -rf node_modules/@dhis2/analytics/build && cp -R ../analytics/build/ node_modules/@dhis2/analytics/build" --initial'
+alias raw='rm -rf node_modules/@dhis2/analytics/build && cp -R ../analytics/build/ node_modules/@dhis2/analytics/build'
+alias sawmap='yarn install --force && rm -rf node_modules/@dhis2/maps-gl/node_modules && npx chokidar-cli "../maps-gl/build/**/*" -c "rm -rf node_modules/@dhis2/maps-gl/build && cp -R ../maps-gl/build/ node_modules/@dhis2/maps-gl/build" --initial'
+alias rawmap='rm -rf node_modules/@dhis2/maps-gl/build && cp -R ../maps-gl/build/ node_modules/@dhis2/maps-gl/build'
 
+# nvm setup
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+# end nvm setup
+
+# pyenv setup
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+# end pyenv setup
+
+eval "$(direnv hook zsh)"
+
+
+source /opt/homebrew/opt/autoenv/activate.sh
