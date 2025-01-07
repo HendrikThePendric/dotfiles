@@ -132,6 +132,7 @@ VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias lazyconfiggit='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias v='nvim'
 alias startopenvpn='sudo openvpn --config ~/.openvpn/privado.ovpn --daemon'
 alias stopopenvpn='sudo killall openvpn'
