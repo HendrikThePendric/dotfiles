@@ -138,6 +138,7 @@ alias startopenvpn='sudo openvpn --config ~/.openvpn/privado.ovpn --daemon'
 alias stopopenvpn='sudo killall openvpn'
 alias dobbysync='ssh dobby "cd homeserver; ./sync_dobby.sh;"'
 alias nuke-nodemodules="find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
+alias remove-resurrect-sessions="find $HOME/.local/share/tmux/resurrect -name 'tmux_resurrect_*.txt' -delete"
 alias docker-cleanup='docker stop $(docker ps -a -q) && docker system prune --all --volumes --force'
 alias docker-up-dhis2="cd ~/Apps/dhis2-core && docker compose up -d"
 alias docker-logs-dhis2="cd ~/Apps/dhis2-core && docker compose logs web --follow"
@@ -149,6 +150,7 @@ alias saw='yarn install --force && rm -rf node_modules/@dhis2/analytics/node_mod
 alias raw='rm -rf node_modules/@dhis2/analytics/build && cp -R ../analytics/build/ node_modules/@dhis2/analytics/build'
 alias sawmap='yarn install --force && rm -rf node_modules/@dhis2/maps-gl/node_modules && npx chokidar-cli "../maps-gl/build/**/*" -c "rm -rf node_modules/@dhis2/maps-gl/build && cp -R ../maps-gl/build/ node_modules/@dhis2/maps-gl/build" --initial'
 alias rawmap='rm -rf node_modules/@dhis2/maps-gl/build && cp -R ../maps-gl/build/ node_modules/@dhis2/maps-gl/build'
+alias cs='clear; tmux clear-history; clear'
 
 # nvm setup
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
