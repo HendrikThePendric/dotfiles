@@ -1,6 +1,14 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
+# Select starship config file for tmux or regular terminal
+if [[ -n $TMUX ]]
+then
+    export STARSHIP_CONFIG=~/.config/starship/config_tmux.toml
+else
+    export STARSHIP_CONFIG=~/.config/starship/config.toml
+fi
+
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -8,6 +16,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# Set to empty string because we use starship
 ZSH_THEME=""
 
 # Set list of themes to pick from when loading at random
