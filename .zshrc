@@ -77,7 +77,7 @@ plugins=(
   zsh-syntax-highlighting
   zsh-interactive-cd
   aliases
-  autoenv
+  # autoenv
   docker
   docker-compose
   gh
@@ -166,4 +166,4 @@ eval "$(pyenv init -)"
 eval "$(direnv hook zsh)"
 
 
-source /opt/homebrew/opt/autoenv/activate.sh
+# source /opt/homebrew/opt/autoenv/activate.sh
