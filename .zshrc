@@ -162,6 +162,7 @@ alias raw='rm -rf node_modules/@dhis2/analytics/build && cp -R ../analytics/buil
 alias sawmap='yarn install --force && rm -rf node_modules/@dhis2/maps-gl/node_modules && npx chokidar-cli "../maps-gl/build/**/*" -c "rm -rf node_modules/@dhis2/maps-gl/build && cp -R ../maps-gl/build/ node_modules/@dhis2/maps-gl/build" --initial'
 alias rawmap='rm -rf node_modules/@dhis2/maps-gl/build && cp -R ../maps-gl/build/ node_modules/@dhis2/maps-gl/build'
 alias cs='clear; tmux clear-history; clear'
+alias aider='aider --model ollama_chat/codegemma:latest --config ~/.aider.conf.yml'
 
 # nvm setup
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
