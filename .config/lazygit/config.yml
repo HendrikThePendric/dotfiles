@@ -1,4 +1,5 @@
 gui:
+  statusPanelView: allBranchesLog
   # Use the mocha mauve catppuccin theme
   theme:
     activeBorderColor:
