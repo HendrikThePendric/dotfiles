@@ -15,9 +15,9 @@ return {
       go_out = "<Left>",
     },
     windows = {
-      width_preview = 100,
-      width_nofocus = 20,
-      width_focus = 20,
+      width_preview = 60,
+      width_nofocus = 30,
+      width_focus = 30,
     },
   },
 }
