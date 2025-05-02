@@ -1,4 +1,5 @@
 gui:
+  commandLogSize: 16
   statusPanelView: allBranchesLog
   # Use the mocha mauve catppuccin theme
   theme:
