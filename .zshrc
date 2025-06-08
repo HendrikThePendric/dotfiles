@@ -115,6 +115,8 @@ source $ZSH/oh-my-zsh.sh
 export NVM_DIR="$HOME/.nvm"
 export DHIS2_HOME="$HOME/.config/dhis2_home"
 export OLLAMA_API_BASE="http://127.0.0.1:11434"
+export OLLAMA_NUM_CTX=8192      # Safe and performant on your M1 Max
+export OLLAMA_NUM_THREAD=8      # Balanced parallelism for 10-core CPU
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -162,7 +164,6 @@ alias raw='rm -rf node_modules/@dhis2/analytics/build && cp -R ../analytics/buil
 alias sawmap='yarn install --force && rm -rf node_modules/@dhis2/maps-gl/node_modules && npx chokidar-cli "../maps-gl/build/**/*" -c "rm -rf node_modules/@dhis2/maps-gl/build && cp -R ../maps-gl/build/ node_modules/@dhis2/maps-gl/build" --initial'
 alias rawmap='rm -rf node_modules/@dhis2/maps-gl/build && cp -R ../maps-gl/build/ node_modules/@dhis2/maps-gl/build'
 alias cs='clear; tmux clear-history; clear'
-alias aider='aider --model ollama_chat/qwen2.5-coder:14b --config ~/.aider.conf.yml'
 
 # nvm setup
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
@@ -179,3 +180,5 @@ eval "$(direnv hook zsh)"
 
 
 # source /opt/homebrew/opt/autoenv/activate.sh
+
+. "$HOME/.local/bin/env"

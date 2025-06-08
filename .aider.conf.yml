@@ -1,4 +1,17 @@
-# dark-mode: true
+model: ollama_chat/deepseek-coder-v2:16b-lite-instruct-q4_K_M
+# Stream model output token-by-token
+stream: true
+# Disable pretty printed chat (optional)
+pretty: false
+# Show file diffs inline after edits
+show-diffs: true
+# Don't auto-commit changes, just stage them
+auto-commits: false
+# Optional: customize system prompt
+# system-message: |
+#   You are a concise and pragmatic AI pair programmer. Use modern TypeScript and Python idioms.
+
+dark-mode: true
 # --> Catppuccin (Mocha)
 # bg "#1e1e2e"
 # fg "#cdd6f4"
