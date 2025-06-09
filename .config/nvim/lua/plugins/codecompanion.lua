@@ -9,6 +9,7 @@ return {
   },
   event = "VeryLazy", -- Load on demand
   opts = {
+    requires_approval = false,
     -- Leave setup empty unless customizing
     -- Default adapter is GitHub Copilot (auto-detected)
   },
