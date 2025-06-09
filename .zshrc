@@ -180,5 +180,3 @@ eval "$(direnv hook zsh)"
 
 
 # source /opt/homebrew/opt/autoenv/activate.sh
-
-. "$HOME/.local/bin/env"
