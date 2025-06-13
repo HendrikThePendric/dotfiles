@@ -9,9 +9,56 @@ return {
   },
   event = "VeryLazy", -- Load on demand
   opts = {
-    requires_approval = false,
+    strategies = {
+      chat = {
+        tools = {
+          ["cmd_runner"] = { requires_approval = false },
+          ["editor"] = { requires_approval = false },
+          ["create_file"] = { requires_approval = false },
+          ["read_file"] = { requires_approval = false },
+          ["insert_edit_into_file"] = { requires_approval = false },
+        },
+        keymaps = {
+          next_chat = {
+            modes = { n = "<leader>an" },
+            opts = { noremap = true, silent = true },
+          },
+          previous_chat = {
+            modes = { n = "<leader>ap" },
+            opts = { noremap = true, silent = true },
+          },
+        },
+      },
+    },
     -- Leave setup empty unless customizing
     -- Default adapter is GitHub Copilot (auto-detected)
+  },
+  keys = {
+    { "<leader>a", "", mode = { "n", "v" }, desc = "+ai", noremap = true, silent = true },
+    {
+      "<leader>aa",
+      ":CodeCompanionActions<CR>",
+      mode = { "n", "v" },
+      desc = "CodeCompanion: action palette",
+      noremap = true,
+      silent = true,
+    },
+    {
+      "<leader>ac",
+      ":CodeCompanionChat Toggle<CR>",
+      mode = { "n", "v" },
+      desc = "CodeCompanion: toggle chat",
+      noremap = true,
+      silent = true,
+    },
+    {
+      "<leader>aA",
+      ":CodeCompanionChat Add<CR>",
+      mode = { "v" },
+      desc = "CodeCompanion: add selection to chat",
+      noremap = true,
+      silent = true,
+    },
   },
   config = function(_, opts)
     -- Treesitter: Ensure markdown support for chat rendering
@@ -19,15 +66,14 @@ return {
       ensure_installed = {
         "markdown",
         "markdown_inline",
+        "diff",
       },
     })
 
-    require("codecompanion").setup(opts)
+    -- Ensure mini.diff is loaded (if using LazyVim, it should be auto-loaded, but you can require it explicitly)
+    pcall(require, "mini.diff")
 
-    -- Key mappings (beautified suggested workflow)
-    vim.keymap.set({ "n", "v" }, "<leader>a", "", { desc = "+ai" })
-    vim.keymap.set({ "n", "v" }, "<leader>aa", ":CodeCompanionActions<CR>", { desc = "CodeCompanion: action palette" })
-    vim.keymap.set({ "n", "v" }, "<leader>ac", ":CodeCompanionChat Toggle<CR>", { desc = "CodeCompanion: toggle chat" })
-    vim.keymap.set("v", "<leader>aA", ":CodeCompanionChat Add<CR>", { desc = "CodeCompanion: add selection to chat" })
+    require("codecompanion").setup(opts)
+    require("codecompanion").setup(opts)
   end,
 }
