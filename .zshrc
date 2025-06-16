@@ -107,6 +107,8 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+# Get some variables we do not want on github
+source ~/.zsh_env_vars
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -180,3 +182,5 @@ eval "$(direnv hook zsh)"
 
 
 # source /opt/homebrew/opt/autoenv/activate.sh
+
+. "$HOME/.local/bin/env"
