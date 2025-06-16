@@ -1,4 +1,7 @@
-model: ollama_chat/deepseek-coder-v2:16b-lite-instruct-q4_K_M
+model: openai/gpt-4o
+weak-model: openai/gpt-4o-mini
+show-model-warnings: false
+# model: ollama_chat/deepseek-coder-v2:16b-lite-instruct-q4_K_M
 # Stream model output token-by-token
 stream: true
 # Disable pretty printed chat (optional)
