@@ -70,9 +70,18 @@ create_symlink() {
     
     # Handle existing files/directories
     if [[ -L "$link" ]]; then
-        # Already a symlink, skip
-        echo -e "${YELLOW}Warning: $link is already a symlink, skipping${NC}"
-        return
+        # Already a symlink - check if it points to the correct target
+        local current_target=$(readlink "$link")
+        if [[ "$current_target" == "$target" ]]; then
+            # Correct symlink already exists, just record it
+            echo "$link" >> "$SYMLINKS_FILE"
+            echo -e "${BLUE}Symlink already exists: $link -> $target${NC}"
+            return
+        else
+            # Symlink points to wrong target, remove and recreate
+            rm "$link"
+            echo -e "${YELLOW}Removed incorrect symlink: $link -> $current_target${NC}"
+        fi
     elif [[ -e "$link" ]]; then
         # Existing file or directory, backup it
         local backup="$link.BAK"
