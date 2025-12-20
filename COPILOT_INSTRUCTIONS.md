@@ -1,13 +1,15 @@
 # Dotfiles Repository Instructions
 
-## Overview
+## Philosophy
 
-This repository manages dotfiles across multiple systems using a symlink-based approach. It supports three systems:
-1. **macos** - MacOS work setup
-2. **ubuntu** - Ubuntu system
-3. **arch** - Arch Linux with Hyprland
+This repository manages dotfiles across multiple systems using a **symlink-based approach**. The core principle is to keep configuration organized by what's shared versus what's host-specific, while maintaining identical directory structures across all locations.
 
-## Repository Structure
+**Supported Systems:**
+- **macos** - MacOS work setup
+- **ubuntu** - Ubuntu system  
+- **arch** - Arch Linux with Hyprland
+
+## Directory Structure
 
 ```
 dotfiles/
@@ -15,92 +17,155 @@ dotfiles/
 ├── macos/            # MacOS-specific configurations
 ├── ubuntu/           # Ubuntu-specific configurations
 ├── arch/             # Arch Linux-specific configurations
-├── scripts/          # Management scripts
+├── scripts/          # Management scripts (sync-to-host.sh)
 ├── empty/            # Generated empty files (gitignored)
-├── .symlinks.txt     # Generated list of created symlinks (gitignored)
-└── BAK/              # Backup of old configs (NOT gitignored)
+├── .symlinks.txt     # Generated symlink tracking (gitignored)
+└── BAK/              # Backup of old configs
 ```
 
-All directories (`shared/`, `macos/`, `ubuntu/`, `arch/`) follow the same directory structure and naming conventions, including nested directories (e.g., `.config/nvim/lua/...`).
+**Key principle:** All host directories (`shared/`, `macos/`, `ubuntu/`, `arch/`) use **identical directory structures and filenames**. This consistency is what makes the system work.
 
-## Configuration File Logic
+## Organization Rules
 
-The presence of a file in different directories determines its behavior:
+The location of a file determines its behavior:
 
-### Case 1: File only in `shared/`
-- **Meaning**: Same config works on all hosts
-- **Action**: Create symlink in `~` or `~/.config` pointing to `shared/filename`
+### Pattern 1: Universal Config
+**File only exists in `shared/`**
+- Same configuration works everywhere
+- Examples: `.gitconfig`, `.config/starship/config.toml`
 
-### Case 2: File in `shared/` AND in a host directory
-- **Meaning**: The shared file is the main config, which sources host-specific config from the identically named file
-- **Action**: 
-  - Create symlink in `~` or `~/.config` pointing to `shared/filename`
-  - Create symlink in `~/.osconfig` pointing to `hosts/current-host/filename`
-  - For other hosts that don't have this file: create an empty file and symlink to it in `~/.osconfig`
+### Pattern 2: Base + Host Override
+**File exists in `shared/` AND one or more host directories**
+- Shared file is the main config
+- Host file contains host-specific additions/overrides
+- Shared config must source from `~/.osconfig/filename`
+- Examples: `.zshrc`, `.config/nvim/lua/config/options.lua`
 
-### Case 3: File NOT in `shared/` but in one or more host directories
-- **Meaning**: File is fully host-specific (may have different versions per host)
-- **Action**: Create symlink in `~` or `~/.config` pointing to `hosts/current-host/filename`
+### Pattern 3: Fully Host-Specific
+**File exists ONLY in host directories (not in `shared/`)**
+- Completely different per host
+- Examples: Hyprland config only on arch, specific scripts per OS
 
-## Symlink Management Script
+## Practical Examples
 
-Location: `scripts/sync-to-host.sh`
+### Example 1: Adding a universal config (zshrc)
 
-### Host Detection
-The script determines the current host based on OS and distribution (macos, ubuntu, or arch).
+If you want the same `.zshrc` everywhere:
+```bash
+# Create the file
+dotfiles/shared/.zshrc
 
-### Script Workflow
+# Run sync
+./scripts/sync-to-host.sh
 
-#### Step 1: Cleanup
-Remove all previously created symlinks by reading `.symlinks.txt` and deleting each symlink listed.
+# Result: ~/.zshrc -> dotfiles/shared/.zshrc (on all hosts)
+```
 
-#### Step 2: Process Shared Files
-Iterate through all files in `shared/`:
-- Create symlinks in `~` or `~/.config` pointing to the shared file
-- Record each created symlink in `.symlinks.txt`
+### Example 2: Adding host-specific zsh settings
 
-#### Step 3: Process Current Host Files
-Iterate through files in the current host directory:
-- **If** file exists in `shared/`: 
-  - This is a host-specific override file
-  - Create symlink in `~/.osconfig` pointing to it
-- **Else**: 
-  - This is a host-unique file
-  - Create symlink in `~` or `~/.config` pointing to it
-- Record each created symlink in `.symlinks.txt`
+If you want base zsh config + host-specific additions:
+```bash
+# Create base config
+dotfiles/shared/.zshrc
+# Add sourcing line at the end:
+# [ -f ~/.osconfig/.zshrc ] && source ~/.osconfig/.zshrc
 
-#### Step 4: Process Other Hosts (Empty File Generation)
-Iterate through files in other host directories:
-- **If** file exists in both `shared/` AND the other host directory, but NOT in current host directory:
-  - Create an empty file in `empty/` directory
-  - Create symlink in `~/.osconfig` pointing to the empty file
-- Record each created symlink in `.symlinks.txt`
+# Create host-specific configs
+dotfiles/macos/.zshrc    # MacOS-specific aliases
+dotfiles/arch/.zshrc     # Arch-specific PATH additions
 
-### Important Notes
+# Run sync on arch host
+./scripts/sync-to-host.sh
 
-1. **Nested Directories**: The script must handle nested directory structures (e.g., `.config/nvim/lua/plugins/init.lua`)
+# Result on arch:
+# ~/.zshrc -> dotfiles/shared/.zshrc
+# ~/.osconfig/.zshrc -> dotfiles/arch/.zshrc
+```
 
-2. **Sourcing Pattern**: How shared configs source host-specific configs is up to each individual config file. The script does NOT automate this. Example pattern:
-   ```bash
-   # In shared/.bashrc
-   [ -f ~/.osconfig/.bashrc ] && source ~/.osconfig/.bashrc
-   ```
+### Example 3: Adding nvim config with host overrides
 
-3. **File Tracking**: Every symlink created in steps 2-4 must be written to `.symlinks.txt` for cleanup on next run.
+```bash
+# Shared nvim config (works everywhere)
+dotfiles/shared/.config/nvim/init.lua
+dotfiles/shared/.config/nvim/lua/config/options.lua
 
-4. **Directory Creation**: The script should create necessary directories (`~/.osconfig`, `~/.config/...`, `empty/`) as needed.
+# Host-specific options
+dotfiles/macos/.config/nvim/lua/config/options.lua
+dotfiles/arch/.config/nvim/lua/config/options.lua
 
-## Gitignore
+# In shared/...config/options.lua, add at the end:
+# if vim.fn.filereadable(vim.fn.expand("~/.osconfig/.config/nvim/lua/config/options.lua")) == 1 then
+#   dofile(vim.fn.expand("~/.osconfig/.config/nvim/lua/config/options.lua"))
+# end
 
-The following should be ignored:
-- `.symlinks.txt` - Generated file, host-specific
-- `empty/` - Generated empty files, host-specific
+# Run sync
+./scripts/sync-to-host.sh
 
-The following should NOT be ignored:
-- `BAK/` - Contains important backup files
+# Result: Base config symlinked to shared, overrides available in ~/.osconfig
+```
 
-## Future Considerations
+### Example 4: Arch-only Hyprland config
 
-- Exclude list support may be needed for non-standard cases
-- Backup functionality before rolling out to existing systems
-- Dry-run mode for previewing changes
+```bash
+# Only on arch
+dotfiles/arch/.config/hypr/hyprland.conf
+dotfiles/arch/.config/hypr/keybinds.conf
+
+# Run sync on arch
+./scripts/sync-to-host.sh
+
+# Result: ~/.config/hypr/* -> dotfiles/arch/.config/hypr/*
+# (Other hosts won't have these files)
+```
+
+## Common Workflows
+
+### Adding a new config file
+
+1. **Decide on pattern**: Universal, base+override, or host-specific?
+2. **Create file(s)** in appropriate directory(ies)
+3. **If base+override**: Add sourcing logic to shared file
+4. **Run sync**: `./scripts/sync-to-host.sh`
+5. **Commit and push** to git
+
+### Creating a host-specific override
+
+1. **Ensure base file exists** in `shared/` with sourcing logic
+2. **Create override file** in `host-dir/` with same path/filename
+3. **Run sync**: `./scripts/sync-to-host.sh`
+4. **Commit and push** to git
+
+### Switching to new host
+
+1. **Clone repo**: `git clone <repo-url> ~/dotfiles`
+2. **Run sync**: `cd ~/dotfiles && ./scripts/sync-to-host.sh`
+3. **Done**: All configs are symlinked appropriately for current host
+
+### Making changes to existing configs
+
+1. **Edit files** directly in the repo (they're symlinked)
+2. **Changes take effect** immediately
+3. **Commit and push** when satisfied
+
+## Important Notes
+
+- **Nested directories**: Fully supported (e.g., `.config/nvim/lua/plugins/...`)
+- **Sourcing is manual**: You must add sourcing logic to shared configs yourself
+- **Empty files**: Automatically created for hosts that need them (when other hosts have overrides)
+- **Existing files**: Backed up to `.BAK` suffix before symlinking
+- **~/.osconfig**: Special directory for host-specific overrides
+
+## Reference: Sync Script Details
+
+**Location:** `scripts/sync-to-host.sh`
+
+**What it does:**
+1. Removes previous symlinks (from `.symlinks.txt`)
+2. Creates symlinks for all `shared/` files to `~` or `~/.config`
+3. Creates symlinks for current host files (to `~/.osconfig` if override, otherwise to `~`)
+4. Creates empty files + symlinks for missing overrides on current host
+5. Tracks all symlinks in `.symlinks.txt`
+
+**Host detection:** Automatic based on OS and distribution (macos/ubuntu/arch)
+
+**Gitignored:** `.symlinks.txt`, `empty/` directory
