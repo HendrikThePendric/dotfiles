@@ -44,7 +44,7 @@ The presence of a file in different directories determines its behavior:
 
 ## Symlink Management Script
 
-Location: `scripts/setup-symlinks.sh`
+Location: `scripts/sync-to-host.sh`
 
 ### Host Detection
 The script determines the current host based on OS and distribution (macos, ubuntu, or arch).
