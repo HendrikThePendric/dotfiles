@@ -6,7 +6,15 @@
     "spacing": 0,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["cpu", "memory", "pulseaudio", "network", "battery"],
+    "modules-right": ["cpu", "memory", "pulseaudio", "network", "battery", "custom/power"],
+        "custom/power": {
+            "format": "⏻",
+            "tooltip": true,
+            "tooltip-format": "Power menu",
+            "on-click": "wlogout -b 5 -c 10 -T 400  -B 400 -s",
+            "on-click-right": "systemctl poweroff",
+            "on-click-middle": "systemctl reboot"
+        },
     "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate",
