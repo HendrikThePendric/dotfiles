@@ -113,10 +113,11 @@
 }
 
 tooltip {
-  color: red;
-  border-radius: 4px;
-  border: 1px solid @pink;
-  background: @base;
+  border-radius: 6px;
+  padding: 4px 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid @surface1;
+  background-color: @base;
 }
 
 tooltip label {
