@@ -2,28 +2,52 @@
 window {
   background-color: #1e1e2e;
 }
+
 button {
-  background-color: #313244;
-  color: #cdd6f4;
-  border-radius: 12px;
-  border: 2px solid #89b4fa;
   font-family: "CaskaydiaCove Nerd Font Propo";
-  font-size: 14px;
-  margin: 6px;
-  padding: 10px 18px;
-  min-width: 80px;
-  max-width: 80px;
-  min-height: 40px;
-  max-height: 40px;
-  width: 80px;
-  height: 40px;
-  transition: background 0.2s, color 0.2s;
-}
-button:hover {
-  background-color: #89b4fa;
-  color: #1e1e2e;
-}
-#lock, #logout, #suspend, #reboot, #shutdown {
-  /* Individual button styles if needed */
+  font-size: 24px;
+  color: #4c4f69;
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-color: #313244;
+  border-color: #313244;
+  border-radius: 12px;
+  border-style: solid;
+  border-width: 8px;
+  transition: border-color 0.2s;
 }
 
+button:focus,
+button:active {
+  border-color: #89b4fa;
+}
+
+button:hover {
+  border-color: #4c4f69;
+}
+
+#lock {
+  background-image: url("icons/lock.png");
+  background-position: center 15px;
+}
+
+#logout {
+  background-image: url("icons/logout.png");
+  background-position: center 10px;
+}
+
+#suspend {
+  background-image: url("icons/suspend.png");
+  background-position: center 5px;
+}
+
+#reboot {
+  background-image: url("icons/reboot.png");
+  background-position: center 10px;
+}
+
+#shutdown {
+  background-image: url("icons/shutdown.png");
+  background-position: center 6px;
+  background-size: 65%;
+}
