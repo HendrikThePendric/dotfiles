@@ -17,13 +17,13 @@ button {
   transition: border-color 0.2s;
 }
 
+button:hover {
+  border-color: #4c4f69;
+}
+
 button:focus,
 button:active {
   border-color: #89b4fa;
-}
-
-button:hover {
-  border-color: #4c4f69;
 }
 
 #lock {

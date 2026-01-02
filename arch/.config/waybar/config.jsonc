@@ -11,7 +11,7 @@
             "format": "⏻",
             "tooltip": true,
             "tooltip-format": "Power menu",
-            "on-click": "wlogout -b 5 -c 50 -T 420  -B 420 -s",
+            "on-click": "$HOME/.config/scripts/wlogout-launch.sh",
             "on-click-right": "systemctl poweroff",
             "on-click-middle": "systemctl reboot"
         },

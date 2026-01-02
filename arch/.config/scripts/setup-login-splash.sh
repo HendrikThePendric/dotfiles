@@ -22,47 +22,68 @@ fi
 
 # Install SDDM
 echo "Installing SDDM..."
-pacman -S --noconfirm sddm qt5-graphicaleffects qt5-quickcontrols2 qt5-svg
+pacman -S --noconfirm sddm qt5-graphicaleffects qt5-quickcontrols2 qt5-svg qt6-svg qt6-declarative
 
 # Install Plymouth
 echo "Installing Plymouth..."
+
 pacman -S --noconfirm plymouth
+
+# Ensure CaskaydiaCove Nerd Font is installed
+echo "Installing CaskaydiaCove Nerd Font..."
+pacman -S --noconfirm ttf-cascadia-code-nerd
 
 # Install Catppuccin SDDM theme from AUR (as the user who invoked sudo)
 echo "Setting up SDDM theme from AUR..."
+
+echo "Downloading Catppuccin Mocha Blue SDDM theme..."
+cd /tmp
+echo "Checking for gh and jq..."
+if ! command -v gh &> /dev/null; then
+    echo "Error: gh (GitHub CLI) is not installed. Please install gh first."
+    exit 1
+fi
+if ! command -v jq &> /dev/null; then
+    echo "Error: jq is not installed. Please install jq first."
+    exit 1
+fi
 REAL_USER="${SUDO_USER:-$USER}"
-sudo -u "$REAL_USER" yay -S --noconfirm sddm-catppuccin-git
+LATEST_URL=$(sudo -u "$REAL_USER" gh release view --repo catppuccin/sddm --json assets | jq -r '.assets[] | select(.name == "catppuccin-mocha-blue-sddm.zip") | .url')
+if [ -z "$LATEST_URL" ]; then
+    echo "Error: Could not find latest catppuccin-mocha-blue-sddm.zip release URL."
+    exit 1
+fi
+rm -rf catppuccin-mocha-blue
+if [ -f "catppuccin-mocha-blue-sddm.zip" ]; then
+    rm "catppuccin-mocha-blue-sddm.zip"
+fi
+wget "$LATEST_URL" -O catppuccin-mocha-blue-sddm.zip
+unzip catppuccin-mocha-blue-sddm.zip
+cp -r catppuccin-mocha-blue /usr/share/sddm/themes/
+
 
 # Configure SDDM
 echo "Configuring SDDM..."
 mkdir -p /etc/sddm.conf.d
 cat > /etc/sddm.conf.d/theme.conf << 'EOF'
 [Theme]
-Current=catppuccin-mocha
-
-[General]
-InputMethod=
+Current=catppuccin-mocha-blue
 EOF
 
 # Customize theme for Mocha with blue accent
 echo "Customizing theme colors..."
-cat > /usr/share/sddm/themes/catppuccin-mocha/theme.conf.user << 'EOF'
-[General]
-Background="backgrounds/squares.png"
-Font="Noto Sans"
-Padding="50"
-CornerRadius="8"
-GeneralFontSize="10"
-LoginScale="0.175"
+cat > /usr/share/sddm/themes/catppuccin-mocha-blue/theme.conf << 'EOF'
+Font="CaskaydiaCove Nerd Font"
+FontSize=28
+ClockEnabled="true"
+CustomBackground="false"
+LoginBackground="false"
+Background="backgrounds/wall.png"
+UserIcon="false"
 
-# Catppuccin Mocha with Blue accent
-UserPictureBorderWidth="5"
-UserPictureBorderColor="#89b4fa"
-UserPictureColor="#89b4fa"
-
-AccentColor="#89b4fa"
-MainColor="#cdd6f4"
-BackgroundColor="#1e1e2e"
+# Uncomment this option to show the last letter of the password
+# for the number of milliseconds specified
+# PasswordShowLastLetter=1000
 EOF
 
 # Clone and install Catppuccin Plymouth theme
@@ -98,6 +119,21 @@ if [ -f /etc/default/grub ]; then
         echo "GRUB already configured for splash"
     fi
 fi
+
+
+# Configure systemd-logind for lid close: suspend
+echo "Configuring /etc/systemd/logind.conf for lid close suspend..."
+if grep -q '^#*HandleLidSwitch=' /etc/systemd/logind.conf; then
+    sed -i 's/^#*HandleLidSwitch=.*/HandleLidSwitch=suspend/' /etc/systemd/logind.conf
+else
+    echo 'HandleLidSwitch=suspend' >> /etc/systemd/logind.conf
+fi
+if grep -q '^#*HandleLidSwitchDocked=' /etc/systemd/logind.conf; then
+    sed -i 's/^#*HandleLidSwitchDocked=.*/HandleLidSwitchDocked=suspend/' /etc/systemd/logind.conf
+else
+    echo 'HandleLidSwitchDocked=suspend' >> /etc/systemd/logind.conf
+fi
+systemctl restart systemd-logind
 
 # Enable SDDM service
 echo "Enabling SDDM service..."

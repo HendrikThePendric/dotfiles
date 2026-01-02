@@ -6,7 +6,7 @@
 }
 {
     "label" : "logout",
-    "action" : "(sleep 1; pkill -KILL -u $USER) &",
+    "action" : "(sleep 0.5; pkill -KILL -u $USER) &",
     "text" : "Logout ",
     "keybind" : "e"
 }
