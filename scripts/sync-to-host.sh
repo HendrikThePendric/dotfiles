@@ -228,6 +228,14 @@ main() {
     
     echo -e "${GREEN}=== Setup complete! ===${NC}"
     echo -e "${BLUE}Symlinks created: $(wc -l < "$SYMLINKS_FILE")${NC}"
+
+    # Reload Hyprland config if on arch
+    if [[ "$CURRENT_HOST" == "arch" ]]; then
+        if command -v hyprctl >/dev/null 2>&1; then
+            echo -e "${YELLOW}Reloading Hyprland config...${NC}"
+            hyprctl reload
+        fi
+    fi
 }
 
 main "$@"
