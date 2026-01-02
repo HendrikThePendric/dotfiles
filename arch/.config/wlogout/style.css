@@ -6,7 +6,8 @@ window {
 button {
   font-family: "CaskaydiaCove Nerd Font Propo";
   font-size: 24px;
-  color: #4c4f69;
+  font-weight: bolder;
+  color: #a6adc8;
   background-size: 70%;
   background-repeat: no-repeat;
   background-color: #313244;
