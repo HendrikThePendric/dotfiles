@@ -1,0 +1,33 @@
+# Mako notification daemon configuration
+background-color=#45475a
+text-color=#cdd6f4
+width=300
+# Notification height (0 for dynamic)
+height=100
+border-size=1
+border-color=#89b4fa
+border-radius=4
+font=CaskaydiaCove Nerd Font Propo 10
+# Default timeout in milliseconds
+default-timeout=5000
+# Ignore timeout for notifications with actions
+ignore-timeout=1
+max-visible=5
+# Sort notifications by urgency
+sort=-time
+# Layer (background, bottom, top, overlay)
+layer=overlay
+# Anchor (top-right, top-center, top-left, bottom-right, bottom-center, bottom-left, center)
+anchor=top-right
+margin=5
+padding=6
+
+[urgency=low]
+border-color=#eba0ac
+
+[urgency=normal]
+border-color=#89b4fa
+
+[urgency=high]
+border-color=#f38ba8
+default-timeout=0
