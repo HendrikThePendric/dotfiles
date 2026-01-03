@@ -1,0 +1,12 @@
+catppuccin-gtk-theme-mocha
+gtk-engine-murrine
+gtk2
+kanata-bin
+kanata-bin-debug
+papirus-folders-catppuccin-git
+sddm-catppuccin-git
+visual-studio-code-bin
+wlogout
+wlogout-debug
+yay
+yay-debug
