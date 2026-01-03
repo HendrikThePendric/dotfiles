@@ -14,7 +14,7 @@
   font-size: 14px;
   margin-top: 2px;
   border-radius: 4px;
-  background-color: @surface0;
+  background-color: @mantle;
   color: @blue;
 }
 
@@ -53,7 +53,7 @@
 #workspaces button.active label,
 #workspaces button.urgent label,
 #workspaces button.visible:not(.active) label {
-  color: @surface0;
+  color: @mantle;
 }
 
 #workspaces button.active {
@@ -69,11 +69,12 @@
 }
 
 #clock {
-  color: @lavender;
+  color: @maroon;
 }
 
 .modules-right .module {
   padding: 2px 8px;
+  color: @text;
 }
 
 #battery {
@@ -88,28 +89,14 @@
   color: @red;
 }
 
-#network {
-  color: @peach;
+#tray > .passive {
+  color: @surface0;
 }
-
-#backlight {
-  color: @yellow;
+#tray > .active {
+  color: @text;
 }
-
-#pulseaudio {
-  color: @pink;
-}
-
-#pulseaudio.muted {
+#tray > .needs-attention {
   color: @red;
-}
-
-#cpu {
-  color: @yellow;
-}
-
-#memory {
-  color: @sapphire;
 }
 
 /* Power button */
@@ -122,10 +109,11 @@
 
 #custom-power:hover {
   background: @blue;
-  color: @surface0;
+  color: @mantle;
 }
 
-tooltip {
+tooltip,
+#tray menu {
   border-radius: 6px;
   padding: 4px 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
