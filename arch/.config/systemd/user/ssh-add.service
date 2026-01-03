@@ -1,0 +1,12 @@
+[Unit]
+Description=Add SSH keys to agent
+After=ssh-agent.service
+Requires=ssh-agent.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/ssh-add
+RemainAfterExit=yes
+
+[Install]
+WantedBy=default.target

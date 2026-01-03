@@ -1,11 +1,14 @@
 #!/bin/bash
-# Setup script for SDDM + Plymouth with Catppuccin Mocha theme
+# Setup script for host configuration: SDDM, Plymouth, GTK theme, and system settings
 # Run with sudo
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$(dirname "$(dirname "$SCRIPT_DIR")")")"
+
 echo "================================================"
-echo "Installing SDDM + Plymouth with Catppuccin Mocha"
+echo "Setting up host: SDDM + Plymouth + GTK theme"
 echo "================================================"
 
 # Check if running as root
@@ -14,20 +17,24 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Check if yay is installed
+# Check if yay is installed, install if not
 if ! command -v yay &> /dev/null; then
-    echo "Error: yay is not installed. Please install yay first."
-    exit 1
+    echo "Installing yay..."
+    pacman -S --needed git base-devel
+    git clone https://aur.archlinux.org/yay.git /tmp/yay
+    cd /tmp/yay
+    makepkg -si --noconfirm
+    cd -
+    rm -rf /tmp/yay
 fi
 
-# Install SDDM
-echo "Installing SDDM..."
-pacman -S --noconfirm sddm qt5-graphicaleffects qt5-quickcontrols2 qt5-svg qt6-svg qt6-declarative
+# Install additional official packages from packages.txt
+echo "Installing additional official packages..."
+pacman -S --noconfirm $(cat ~/.config/scripts/packages.txt)
 
-# Install Plymouth
-echo "Installing Plymouth..."
-
-pacman -S --noconfirm plymouth
+# Install AUR packages from aur-packages.txt
+echo "Installing AUR packages..."
+yay -S --noconfirm $(cat ~/.config/scripts/aur-packages.txt)
 
 # Ensure CaskaydiaCove Nerd Font is installed
 echo "Installing CaskaydiaCove Nerd Font..."
@@ -48,6 +55,11 @@ if ! command -v jq &> /dev/null; then
     exit 1
 fi
 REAL_USER="${SUDO_USER:-$USER}"
+
+# Run sync script to create symlinks early
+echo "Running sync script to set up dotfiles symlinks..."
+sudo -u "$REAL_USER" "$REPO_ROOT/scripts/sync-to-host.sh"
+
 LATEST_URL=$(sudo -u "$REAL_USER" gh release view --repo catppuccin/sddm --json assets | jq -r '.assets[] | select(.name == "catppuccin-mocha-blue-sddm.zip") | .url')
 if [ -z "$LATEST_URL" ]; then
     echo "Error: Could not find latest catppuccin-mocha-blue-sddm.zip release URL."
@@ -99,6 +111,12 @@ cd plymouth-catppuccin
 cp -r themes/catppuccin-mocha /usr/share/plymouth/themes/
 plymouth-set-default-theme -R catppuccin-mocha
 
+# Set GTK theme for the user
+echo "Setting GTK theme..."
+sudo -u "$REAL_USER" gsettings set org.gnome.desktop.interface gtk-theme 'Catppuccin-Mocha-Standard-Blue-Dark'
+sudo -u "$REAL_USER" gsettings set org.gnome.desktop.wm.preferences theme 'Catppuccin-Mocha-Standard-Blue-Dark'
+sudo -u "$REAL_USER" gsettings set org.gnome.desktop.interface cursor-theme 'Catppuccin-Mocha-Dark-Cursors'
+
 # Configure mkinitcpio
 echo "Configuring mkinitcpio..."
 if ! grep -q "plymouth" /etc/mkinitcpio.conf; then
@@ -135,6 +153,11 @@ else
 fi
 systemctl restart systemd-logind
 
+# Enable user systemd services
+echo "Enabling user systemd services..."
+sudo -u "$REAL_USER" systemctl --user enable kanata.service
+sudo -u "$REAL_USER" systemctl --user enable ssh-add.service
+
 # Enable SDDM service
 echo "Enabling SDDM service..."
 systemctl enable sddm.service
@@ -142,13 +165,6 @@ systemctl enable sddm.service
 echo ""
 echo "================================================"
 echo "Installation complete!"
-echo "================================================"
-echo ""
-echo "Optional: Install Catppuccin cursors and GTK theme"
-echo "  yay -S catppuccin-cursors-mocha catppuccin-gtk-theme-mocha"
-echo ""
-echo "To test SDDM theme:"
-echo "  sddm-greeter --test-mode --theme /usr/share/sddm/themes/catppuccin-mocha"
-echo ""
 echo "Reboot to see the changes!"
+echo "================================================"
 echo ""
