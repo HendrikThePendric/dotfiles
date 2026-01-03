@@ -5,10 +5,10 @@ window {
 
 button {
   font-family: "CaskaydiaCove Nerd Font Propo";
-  font-size: 24px;
+  font-size: 18px;
   font-weight: bolder;
   color: #a6adc8;
-  background-size: 70%;
+  background-size: 60%;
   background-repeat: no-repeat;
   background-color: #313244;
   border-color: #313244;
@@ -29,26 +29,26 @@ button:active {
 
 #lock {
   background-image: url("icons/lock.png");
-  background-position: center 15px;
+  background-position: center 5px;
 }
 
 #logout {
   background-image: url("icons/logout.png");
-  background-position: center 10px;
+  background-position: center 0;
 }
 
 #suspend {
   background-image: url("icons/suspend.png");
-  background-position: center 5px;
+  background-position: center -5px;
 }
 
 #reboot {
   background-image: url("icons/reboot.png");
-  background-position: center 10px;
+  background-position: center 2px;
 }
 
 #shutdown {
   background-image: url("icons/shutdown.png");
-  background-position: center 6px;
-  background-size: 65%;
+  background-position: center 0;
+  background-size: 55%;
 }

@@ -1,2 +1,2 @@
 #!/bin/sh
-exec wlogout -b 5 -c 50 -T 420 -B 420 -s
+exec wlogout -b 5 -c 30 -T 460 -R 410 -B 460 -L 410 -s
