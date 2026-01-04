@@ -54,6 +54,7 @@ qt5-quickcontrols2
 qt5-svg
 qt5-wayland
 qt6-wayland
+rofi
 sddm
 seahorse
 slurp
@@ -75,7 +76,6 @@ wev
 wget
 wireless_tools
 wireplumber
-wofi
 wpa_supplicant
 xdg-desktop-portal-hyprland
 xdg-utils
