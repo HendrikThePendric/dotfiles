@@ -4,39 +4,39 @@
 @import "catppuccin-mocha"
 
 * {
-  selected-active-foreground: @background;
+  selected-active-foreground:  @base;
   lightfg:                     @text;
-  separatorcolor:              @foreground;
+  separatorcolor:              @text;
   urgent-foreground:           @red;
-  alternate-urgent-background: @lightbg;
+  alternate-urgent-background: @mantle;
   lightbg:                     @mantle;
   background-color:            transparent;
-  border-color:                @foreground;
-  normal-background:           @background;
+  border-color:                @text;
+  normal-background:           @base;
   selected-urgent-background:  @red;
-  alternate-active-background: @lightbg;
+  alternate-active-background: @mantle;
   spacing:                     2;
-  alternate-normal-foreground: @foreground;
-  urgent-background:           @background;
-  selected-normal-foreground:  @lightbg;
+  alternate-normal-foreground: @text;
+  urgent-background:           @base;
+  selected-normal-foreground:  @mantle;
   active-foreground:           @blue;
   background:                  @base;
   selected-active-background:  @blue;
-  active-background:           @background;
-  selected-normal-background:  @lightfg;
-  alternate-normal-background: @lightbg;
+  active-background:           @base;
+  selected-normal-background:  @text;
+  alternate-normal-background: @mantle;
   foreground:                  @text;
-  selected-urgent-foreground:  @background;
-  normal-foreground:           @foreground;
+  selected-urgent-foreground:  @base;
+  normal-foreground:           @text;
   alternate-urgent-foreground: @red;
   alternate-active-foreground: @blue;
-  selected-active-foreground:  @background;
+  selected-active-foreground:  @base;
 }
 element {
     padding: 1px ;
     cursor:  pointer;
     spacing: 5px ;
-    border: 0;
+    border:  0;
 }
 element normal.normal {
     background-color: @normal-background;
