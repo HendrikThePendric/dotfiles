@@ -15,6 +15,36 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 SHARED_DIR="$REPO_ROOT/shared"
 EMPTY_DIR="$REPO_ROOT/empty"
 SYMLINKS_FILE="$REPO_ROOT/.symlinks.txt"
+TEMP_SYMLINKS_FILE="$REPO_ROOT/.symlinks.tmp"
+
+# Extract base filename from a path (e.g., .zshrc.env -> .zshrc)
+# Returns empty string if the file doesn't have a dot-separated suffix
+get_base_filename() {
+    local filepath=$1
+    local filename=$(basename "$filepath")
+    local dirname=$(dirname "$filepath")
+    
+    # Check if filename has a pattern like "basename.suffix"
+    # We need at least one dot that's not at the start
+    if [[ "$filename" =~ ^(.+)\.([^.]+)$ ]]; then
+        local base="${BASH_REMATCH[1]}"
+        local suffix="${BASH_REMATCH[2]}"
+        
+        # Don't treat .local as a regular suffix - it's reserved for overrides
+        if [[ "$suffix" == "local" ]]; then
+            echo ""
+        else
+            # Return the full path with just the base filename
+            if [[ "$dirname" == "." ]]; then
+                echo "$base"
+            else
+                echo "$dirname/$base"
+            fi
+        fi
+    else
+        echo ""
+    fi
+}
 
 # Detect current host based on OS and distribution
 detect_host() {
@@ -61,6 +91,9 @@ create_symlink() {
     local target=$1
     local link=$2
     
+    # Always record in temp file
+    echo "$link" >> "$TEMP_SYMLINKS_FILE"
+    
     # Create parent directory if it doesn't exist
     local link_dir=$(dirname "$link")
     if [[ ! -d "$link_dir" ]]; then
@@ -73,14 +106,15 @@ create_symlink() {
         # Already a symlink - check if it points to the correct target
         local current_target=$(readlink "$link")
         if [[ "$current_target" == "$target" ]]; then
-            # Correct symlink already exists, just record it
-            echo "$link" >> "$SYMLINKS_FILE"
+            # Correct symlink already exists
             echo -e "${BLUE}Symlink already exists: $link -> $target${NC}"
             return
         else
             # Symlink points to wrong target, remove and recreate
             rm "$link"
-            echo -e "${YELLOW}Removed incorrect symlink: $link -> $current_target${NC}"
+            echo -e "${YELLOW}Updated symlink: $link${NC}"
+            echo -e "${YELLOW}  Old: $current_target${NC}"
+            echo -e "${YELLOW}  New: $target${NC}"
         fi
     elif [[ -e "$link" ]]; then
         # Existing file or directory, backup it
@@ -91,26 +125,50 @@ create_symlink() {
     
     # Create symlink
     ln -s "$target" "$link"
-    echo "$link" >> "$SYMLINKS_FILE"
     echo -e "${GREEN}Created symlink: $link -> $target${NC}"
 }
 
-# Remove all previously created symlinks
-cleanup_symlinks() {
+# Remove orphaned symlinks (in old list but not in desired list)
+cleanup_orphaned_symlinks() {
     if [[ ! -f "$SYMLINKS_FILE" ]]; then
-        echo -e "${BLUE}No previous symlinks to remove${NC}"
+        echo -e "${BLUE}No previous symlinks file found${NC}"
         return
     fi
     
-    echo -e "${BLUE}Removing previous symlinks...${NC}"
+    if [[ ! -f "$TEMP_SYMLINKS_FILE" ]]; then
+        echo -e "${YELLOW}Warning: No desired symlinks collected${NC}"
+        return
+    fi
+    
+    echo -e "${BLUE}Checking for orphaned symlinks...${NC}"
+    
+    # Create associative array of desired symlinks for fast lookup
+    declare -A desired_set
     while IFS= read -r symlink; do
-        if [[ -L "$symlink" ]]; then
-            rm "$symlink"
-            echo -e "${GREEN}Removed: $symlink${NC}"
-        elif [[ -e "$symlink" ]]; then
-            echo -e "${YELLOW}Warning: $symlink exists but is not a symlink, skipping${NC}"
+        desired_set["$symlink"]=1
+    done < "$TEMP_SYMLINKS_FILE"
+    
+    local removed_count=0
+    
+    # Check each old symlink
+    while IFS= read -r symlink; do
+        # If not in desired set, remove it
+        if [[ ! -v desired_set["$symlink"] ]]; then
+            if [[ -L "$symlink" ]]; then
+                rm "$symlink"
+                echo -e "${YELLOW}Removed orphaned symlink: $symlink${NC}"
+                ((removed_count++))
+            elif [[ -e "$symlink" ]]; then
+                echo -e "${YELLOW}Warning: $symlink exists but is not a symlink, skipping${NC}"
+            fi
         fi
     done < "$SYMLINKS_FILE"
+    
+    if [[ $removed_count -eq 0 ]]; then
+        echo -e "${BLUE}No orphaned symlinks found${NC}"
+    else
+        echo -e "${GREEN}Removed $removed_count orphaned symlink(s)${NC}"
+    fi
     
     rm "$SYMLINKS_FILE"
     echo -e "${GREEN}Cleanup complete${NC}"
@@ -141,22 +199,14 @@ main() {
     HOST_DIR="$REPO_ROOT/$CURRENT_HOST"
     echo -e "${GREEN}Detected host: $CURRENT_HOST${NC}\n"
     
-    # Step 1: Cleanup previous symlinks
-    echo -e "${BLUE}Step 1: Cleanup${NC}"
-    cleanup_symlinks
-    echo ""
-    
-    # Initialize empty symlinks file
-    touch "$SYMLINKS_FILE"
-    
-    # Create ~/.osconfig if it doesn't exist
-    mkdir -p "$HOME/.osconfig"
+    # Initialize temp symlinks file
+    > "$TEMP_SYMLINKS_FILE"
     
     # Create empty directory if it doesn't exist
     mkdir -p "$EMPTY_DIR"
     
-    # Step 2: Process shared files
-    echo -e "${BLUE}Step 2: Processing shared files${NC}"
+    # Step 1: Process shared files
+    echo -e "${BLUE}Step 1: Processing shared files${NC}"
     if [[ -d "$SHARED_DIR" ]]; then
         process_directory "$SHARED_DIR" "$CURRENT_HOST" | while IFS= read -r rel_path; do
             local shared_file="$SHARED_DIR/$rel_path"
@@ -168,8 +218,8 @@ main() {
     fi
     echo ""
     
-    # Step 3: Process current host files
-    echo -e "${BLUE}Step 3: Processing $CURRENT_HOST files${NC}"
+    # Step 2: Process current host files
+    echo -e "${BLUE}Step 2: Processing $CURRENT_HOST files${NC}"
     if [[ -d "$HOST_DIR" ]]; then
         process_directory "$HOST_DIR" "$CURRENT_HOST" | while IFS= read -r rel_path; do
             local host_file="$HOST_DIR/$rel_path"
@@ -177,8 +227,17 @@ main() {
             
             if [[ -e "$shared_file" || -L "$shared_file" ]]; then
                 # File exists in shared, this is a host-specific override
-                local osconfig_link="$HOME/.osconfig/$rel_path"
-                create_symlink "$host_file" "$osconfig_link"
+                # Append .local to the filename
+                local dir=$(dirname "$rel_path")
+                local filename=$(basename "$rel_path")
+                local local_rel_path
+                if [[ "$dir" == "." ]]; then
+                    local_rel_path="${filename}.local"
+                else
+                    local_rel_path="${dir}/${filename}.local"
+                fi
+                local home_link="$HOME/$local_rel_path"
+                create_symlink "$host_file" "$home_link"
             else
                 # File is unique to this host
                 local home_link="$HOME/$rel_path"
@@ -190,8 +249,8 @@ main() {
     fi
     echo ""
     
-    # Step 4: Process other hosts (create empty files where needed)
-    echo -e "${BLUE}Step 4: Processing other hosts (empty file generation)${NC}"
+    # Step 3: Process other hosts (create empty files where needed)
+    echo -e "${BLUE}Step 3: Processing other hosts (empty file generation)${NC}"
     for other_host in $(get_other_hosts "$CURRENT_HOST"); do
         local other_host_dir="$REPO_ROOT/$other_host"
         
@@ -204,10 +263,19 @@ main() {
             local shared_file="$SHARED_DIR/$rel_path"
             local current_host_file="$HOST_DIR/$rel_path"
             
-            # Check if file exists in shared AND other host, but NOT in current host
+            # Case 1: File exists in shared AND other host, but NOT in current host
+            # Create empty .local override
             if [[ (-e "$shared_file" || -L "$shared_file") && ! (-e "$current_host_file" || -L "$current_host_file") ]]; then
-                # Create empty file and symlink to it
-                local empty_file="$EMPTY_DIR/$rel_path"
+                local dir=$(dirname "$rel_path")
+                local filename=$(basename "$rel_path")
+                local local_rel_path
+                if [[ "$dir" == "." ]]; then
+                    local_rel_path="${filename}.local"
+                else
+                    local_rel_path="${dir}/${filename}.local"
+                fi
+                
+                local empty_file="$EMPTY_DIR/$local_rel_path"
                 local empty_file_dir=$(dirname "$empty_file")
                 
                 if [[ ! -d "$empty_file_dir" ]]; then
@@ -219,15 +287,49 @@ main() {
                     echo -e "${BLUE}Created empty file: $empty_file${NC}"
                 fi
                 
-                local osconfig_link="$HOME/.osconfig/$rel_path"
-                create_symlink "$empty_file" "$osconfig_link"
+                local home_link="$HOME/$local_rel_path"
+                create_symlink "$empty_file" "$home_link"
+            fi
+            
+            # Case 2: Check if this is an additional file (baseFileName.suffix pattern)
+            # and if the base file exists in shared or current host
+            local base_rel_path=$(get_base_filename "$rel_path")
+            if [[ -n "$base_rel_path" ]]; then
+                local base_shared_file="$SHARED_DIR/$base_rel_path"
+                local base_current_host_file="$HOST_DIR/$base_rel_path"
+                
+                # If base file exists in shared or current host, but this suffix file doesn't exist in current host
+                if [[ ((-e "$base_shared_file" || -L "$base_shared_file") || (-e "$base_current_host_file" || -L "$base_current_host_file")) && ! (-e "$current_host_file" || -L "$current_host_file") ]]; then
+                    local empty_file="$EMPTY_DIR/$rel_path"
+                    local empty_file_dir=$(dirname "$empty_file")
+                    
+                    if [[ ! -d "$empty_file_dir" ]]; then
+                        mkdir -p "$empty_file_dir"
+                    fi
+                    
+                    if [[ ! -e "$empty_file" ]]; then
+                        touch "$empty_file"
+                        echo -e "${BLUE}Created empty file: $empty_file${NC}"
+                    fi
+                    
+                    local home_link="$HOME/$rel_path"
+                    create_symlink "$empty_file" "$home_link"
+                fi
             fi
         done
     done
     echo ""
     
+    # Step 4: Remove orphaned symlinks
+    echo -e "${BLUE}Step 4: Cleanup${NC}"
+    cleanup_orphaned_symlinks
+    echo ""
+    
+    # Replace old symlinks file with new one
+    mv "$TEMP_SYMLINKS_FILE" "$SYMLINKS_FILE"
+    
     echo -e "${GREEN}=== Setup complete! ===${NC}"
-    echo -e "${BLUE}Symlinks created: $(wc -l < "$SYMLINKS_FILE")${NC}"
+    echo -e "${BLUE}Total symlinks: $(wc -l < "$SYMLINKS_FILE")${NC}"
 
     # Reload Hyprland config if on arch
     if [[ "$CURRENT_HOST" == "arch" ]]; then
