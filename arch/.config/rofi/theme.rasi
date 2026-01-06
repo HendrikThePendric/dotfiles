@@ -23,7 +23,7 @@
   normal-foreground:           @text;
   selected-active-background:  @blue;
   selected-active-foreground:  @base;
-  selected-normal-background:  @mauve;
+  selected-normal-background:  @lavender;
   selected-normal-foreground:  @mantle;
   selected-urgent-background:  @red;
   selected-urgent-foreground:  @base;
@@ -97,20 +97,20 @@ mainbox {
     border:  0;
 }
 message {
-    padding:      4px ;
-    border-color: @peach;
-    border:       2px solid 0px 0px ;
+    padding:      2px 6px;
+    border-color: @separatorcolor;
+    border:       2px dash 0px 0px ;
 }
 textbox {
     text-color: @foreground;
 }
 listview {
-    padding:      4px 0px 0px ;
+    padding:      2px 0px 0px ;
     scrollbar:    true;
-    border-color: @blue;
+    border-color: @separatorcolor;
     spacing:      0 ;
     fixed-height: 0;
-    border:       2px solid 0px 0px ;
+    border:       2px dash 0px 0px ;
 }
 scrollbar {
     width:        4px ;
