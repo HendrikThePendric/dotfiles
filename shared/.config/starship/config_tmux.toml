@@ -5,11 +5,28 @@
 # Palettes must be defined _after_ this line
 palette = "catppuccin_mocha"
 
-[git_branch]
-style = "bold mauve"
+# Starship modules
+[character]
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](subtext1)" # For use with zsh-vi-mode
 
 [directory]
+truncation_length = 4
 style = "bold lavender"
+
+# Disable all Git related modules because these are displayed in the tmux status bar
+[git_branch]
+disabled = true
+
+[git_commit]
+disabled = true
+
+[git_state]
+disabled = true
+
+[git_status]
+disabled = true
 
 # Palette definition
 [palettes.catppuccin_mocha]

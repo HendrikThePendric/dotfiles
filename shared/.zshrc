@@ -31,6 +31,50 @@ setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 
 # ============================================================================
+# Antidote Plugin Manager
+# ============================================================================
+
+# ANTIDOTE_DIR should be set in ~/.zshrc.env for each host
+# macOS (Apple Silicon): /opt/homebrew/share/antidote
+# macOS (Intel):         /usr/local/share/antidote
+# Arch Linux:            /usr/share/zsh-antidote
+# Ubuntu:                /usr/share/zsh-antidote
+
+if [[ -n "$ANTIDOTE_DIR" && -f "$ANTIDOTE_DIR/antidote.zsh" ]]; then
+    source "$ANTIDOTE_DIR/antidote.zsh"
+    antidote load
+fi
+
+# ============================================================================
+# Plugin Configuration
+# ============================================================================
+
+# Catppuccin Mocha theme for syntax highlighting
+[[ -f ~/.config/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh ]] && source ~/.config/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
+
+# Catppuccin Mocha colors for fzf
+export FZF_TAB_OPTIONS=" \
+--color=bg+:#313244,bg:#1E1E2E,spinner:#F5E0DC,hl:#F38BA8 \
+--color=fg:#CDD6F4,header:#F38BA8,info:#CBA6F7,pointer:#F5E0DC \
+--color=marker:#B4BEFE,fg+:#CDD6F4,prompt:#CBA6F7,hl+:#F38BA8 \
+--color=selected-bg:#45475A \
+--color=border:#6C7086,label:#CDD6F4 \
+--bind=tab:accept"
+
+# Apply FZF colors to fzf-tab completions
+zstyle ':fzf-tab:*' fzf-flags $(echo $FZF_TAB_OPTIONS)
+
+# History substring search: Use Up/Down arrows to filter history by current input
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# ============================================================================
+# Better cd-ing
+# ============================================================================
+
+eval "$(zoxide init zsh)"
+
+# ============================================================================
 # Editor
 # ============================================================================
 

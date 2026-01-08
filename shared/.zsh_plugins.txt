@@ -1,0 +1,27 @@
+# ============================================================================
+# Antidote Plugin Configuration
+# ============================================================================
+# This file is loaded by antidote to manage zsh plugins.
+# After editing, run: antidote update
+
+# CORE UTILITIES (Zephyr Micro-framework)
+mattmc3/zephyr path:plugins/completion
+mattmc3/zephyr path:plugins/editor
+mattmc3/zephyr path:plugins/directory
+mattmc3/zephyr path:plugins/utility
+
+# VI MODE
+jeffreytse/zsh-vi-mode
+
+# IDE UI & THEMING
+zsh-users/zsh-syntax-highlighting
+zsh-users/zsh-autosuggestions
+Aloxaf/fzf-tab
+zsh-users/zsh-completions
+zsh-users/zsh-history-substring-search
+
+# WORKFLOW
+lukechilds/zsh-nvm
+ohmyzsh/ohmyzsh path:plugins/sudo
+ohmyzsh/ohmyzsh path:plugins/tmux
+ohmyzsh/ohmyzsh path:plugins/docker
