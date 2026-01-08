@@ -30,3 +30,4 @@ gui:
 
   authorColors:
     "*": "#b4befe"
+promptToReturnFromSubprocess: false
