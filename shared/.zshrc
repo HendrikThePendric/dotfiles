@@ -57,7 +57,7 @@ fi
 [[ -f ~/.config/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh ]] && source ~/.config/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
 
 # Catppuccin Mocha colors for fzf
-export FZF_TAB_OPTIONS=" \
+export FZF_DEFAULT_OPTS=" \
 --color=bg+:#313244,bg:#1E1E2E,spinner:#F5E0DC,hl:#F38BA8 \
 --color=fg:#CDD6F4,header:#F38BA8,info:#CBA6F7,pointer:#F5E0DC \
 --color=marker:#B4BEFE,fg+:#CDD6F4,prompt:#CBA6F7,hl+:#F38BA8 \
@@ -66,7 +66,7 @@ export FZF_TAB_OPTIONS=" \
 --bind=tab:accept"
 
 # Apply FZF colors to fzf-tab completions
-zstyle ':fzf-tab:*' fzf-flags $(echo $FZF_TAB_OPTIONS)
+zstyle ':fzf-tab:*' fzf-flags $(echo $FZF_DEFAULT_OPTS)
 
 # History substring search: Use Up/Down arrows to filter history by current input
 bindkey '^[[A' history-substring-search-up
