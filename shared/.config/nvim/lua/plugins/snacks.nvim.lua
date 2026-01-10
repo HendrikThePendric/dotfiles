@@ -12,11 +12,16 @@ return {
     lazygit = {
       enabled = false,
     },
-    explorer = { enabled = true }, -- NOT HERE!
+    explorer = { enabled = true },
     picker = {
       enabled = true,
       sources = {
-        explorer = { -- HERE!
+        projects = {
+          dev = "~/projects",
+          patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "package.json", "Makefile", "pyproject.toml" },
+          recent = false,
+        },
+        explorer = {
           enabled = true,
           hidden = true,
           auto_close = false,
@@ -45,6 +50,13 @@ return {
         end
       end,
       desc = "File explorer",
+    },
+    {
+      "<leader>fp",
+      function()
+        Snacks.picker.projects()
+      end,
+      desc = "Projects",
     },
   },
 }
