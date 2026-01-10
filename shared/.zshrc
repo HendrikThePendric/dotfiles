@@ -40,6 +40,10 @@ setopt PUSHD_IGNORE_DUPS
 # Arch Linux:            /usr/share/zsh-antidote
 # Ubuntu:                /usr/share/zsh-antidote
 
+# Set up cache directory for oh-my-zsh plugins
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+mkdir -p "$ZSH_CACHE_DIR/completions"
+
 if [[ -n "$ANTIDOTE_DIR" && -f "$ANTIDOTE_DIR/antidote.zsh" ]]; then
     source "$ANTIDOTE_DIR/antidote.zsh"
     antidote load
