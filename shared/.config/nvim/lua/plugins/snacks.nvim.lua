@@ -12,6 +12,7 @@ return {
     lazygit = {
       enabled = false,
     },
+    terminal = { enabled = false },
     explorer = { enabled = true },
     picker = {
       enabled = true,
@@ -58,5 +59,5 @@ return {
       end,
       desc = "Projects",
     },
-  },
+  }
 }

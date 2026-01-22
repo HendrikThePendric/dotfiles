@@ -12,3 +12,9 @@ vim.api.nvim_create_autocmd({ "DirChanged" }, {
     vim.opt.titlestring = string.gsub(vim.fn.getcwd(), tostring(os.getenv("HOME")), "~")
   end,
 })
+vim.api.nvim_create_autocmd('TermOpen', {
+  pattern = '*',
+  callback = function()
+    vim.opt_local.statusline = vim.opt.statusline:get()
+  end
+})
