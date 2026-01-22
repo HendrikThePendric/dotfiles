@@ -9,6 +9,9 @@
 # - Host-specific exports
 [[ -f ~/.zshrc.env ]] && source ~/.zshrc.env
 
+# Load other environment variables
+[[ -f ~/.config/env/env.local ]] && source ~/.config/env/env.local
+
 # ============================================================================
 # Core Settings
 # ============================================================================
