@@ -1,10 +1,15 @@
+git:
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never
+
 gui:
   commandLogSize: 16
   statusPanelView: allBranchesLog
-  # Use the mocha mauve catppuccin theme
+  # Use the mocha blue catppuccin theme
   theme:
     activeBorderColor:
-      - "#cba6f7"
+      - "#89b4fa"
       - bold
     inactiveBorderColor:
       - "#a6adc8"
@@ -15,7 +20,7 @@ gui:
     cherryPickedCommitBgColor:
       - "#45475a"
     cherryPickedCommitFgColor:
-      - "#cba6f7"
+      - "#89b4fa"
     unstagedChangesColor:
       - "#f38ba8"
     defaultFgColor:

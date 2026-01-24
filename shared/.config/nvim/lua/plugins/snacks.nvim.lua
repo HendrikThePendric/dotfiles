@@ -1,6 +1,12 @@
 return {
   "folke/snacks.nvim",
   opts = {
+    styles = {
+      lazygit = {
+        width = 0.999,
+        height = 0.999,
+      },
+    },
     indent = {
       animate = {
         enabled = false,
@@ -10,7 +16,7 @@ return {
       enabled = false,
     },
     lazygit = {
-      enabled = false,
+      enabled = true,
     },
     terminal = { enabled = false },
     explorer = { enabled = true },
@@ -59,5 +65,5 @@ return {
       end,
       desc = "Projects",
     },
-  }
+  },
 }
