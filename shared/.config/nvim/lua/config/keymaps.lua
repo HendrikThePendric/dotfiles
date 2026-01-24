@@ -21,3 +21,14 @@ vim.keymap.del({"n"}, "<leader>fT")
 vim.keymap.del({"n", "t"}, "<c-/>")
 vim.keymap.del({"n", "t"}, "<c-_>")
 
+--------------
+-- AI ASSISTANT --
+--------------
+
+-- Add AI assistant which-key group
+wk.add({{
+    "<leader>a",
+    group = "AI Assistant",
+    icon = "󱚢 "
+}})
+
