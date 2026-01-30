@@ -52,6 +52,9 @@ if [[ -n "$ANTIDOTE_DIR" && -f "$ANTIDOTE_DIR/antidote.zsh" ]]; then
     antidote load
 fi
 
+# opencode
+export PATH=/home/hendrik/.opencode/bin:$PATH
+
 # ============================================================================
 # Plugin Configuration
 # ============================================================================
