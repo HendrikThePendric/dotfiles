@@ -16,14 +16,19 @@ return {
       enabled = false,
     },
     lazygit = {
+      enabled = false,
+    },
+    terminal = {
+      enabled = false,
+    },
+    explorer = {
       enabled = true,
     },
-    terminal = { enabled = false },
-    explorer = { enabled = true },
     picker = {
       enabled = true,
       sources = {
         projects = {
+          enabled = false,
           dev = "~/projects",
           patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "package.json", "Makefile", "pyproject.toml" },
           recent = false,
@@ -35,7 +40,10 @@ return {
           win = {
             list = {
               keys = {
-                ["O"] = { { "pick_win", "jump" }, mode = { "n", "i" } },
+                ["O"] = {
+                  { "pick_win", "jump" },
+                  mode = { "n", "i" },
+                },
               },
             },
           },
@@ -47,7 +55,9 @@ return {
     {
       "<leader>e",
       function()
-        local explorer_pickers = Snacks.picker.get({ source = "explorer" })
+        local explorer_pickers = Snacks.picker.get({
+          source = "explorer",
+        })
         if #explorer_pickers == 0 then
           Snacks.picker.explorer()
         elseif explorer_pickers[1]:is_focused() then
@@ -57,13 +67,12 @@ return {
         end
       end,
       desc = "File explorer",
-    },
-    {
-      "<leader>fp",
-      function()
-        Snacks.picker.projects()
-      end,
-      desc = "Projects",
-    },
+    }, -- {
+    --     "<leader>fp",
+    --     function()
+    --         Snacks.picker.projects()
+    --     end,
+    --     desc = "Projects"
+    -- }
   },
 }
