@@ -12,7 +12,8 @@ local wk = require("which-key")
 wk.add({{
     "<leader>z",
     group = "Terminal",
-    icon = ""
+    icon = "",
+    mode = { "n", "v" }
 }})
 
 -- Remove LazyVim default terminal mappings
@@ -22,13 +23,14 @@ vim.keymap.del({"n", "t"}, "<c-/>")
 vim.keymap.del({"n", "t"}, "<c-_>")
 
 --------------
--- AI ASSISTANT --
+-- OPENCODE --
 --------------
 
--- Add AI assistant which-key group
+-- Add OpenCode which-key group
 wk.add({{
-    "<leader>a",
-    group = "AI Assistant",
-    icon = "󱚢 "
+    "<leader>o",
+    group = "OpenCode",
+    icon = "󱚢 ",
+    mode = { "n", "v" }
 }})
 
