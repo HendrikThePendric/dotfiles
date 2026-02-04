@@ -101,8 +101,8 @@ fi
 # ============================================================================
 
 # Select starship config based on context
-if [[ -n $TMUX ]]; then
-    export STARSHIP_CONFIG=~/.config/starship/config_tmux.toml
+if [[ -n "$ZELLIJ" || -n "$TMUX" ]]; then
+    export STARSHIP_CONFIG=~/.config/starship/config_minimal.toml
 else
     export STARSHIP_CONFIG=~/.config/starship/config.toml
 fi
