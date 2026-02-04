@@ -1,14 +1,3 @@
 # Generated files (host-specific)
 .symlinks.txt
 empty/
-
-# Temporary: BAK/ directory gitignore patterns (remove later)
-# These patterns apply to files in BAK/ that were previously gitignored
-BAK/.config/nvim/tt.*
-BAK/.config/nvim/.tests
-BAK/.config/nvim/doc/tags
-BAK/.config/nvim/debug
-BAK/.config/nvim/.repro
-BAK/.config/nvim/foo.*
-BAK/.config/nvim/*.log
-BAK/.config/nvim/data
