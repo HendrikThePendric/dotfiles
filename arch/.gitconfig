@@ -1,0 +1,9 @@
+# ============================================================================
+# Arch Linux Git Configuration - User-Specific Overrides
+# ============================================================================
+# This file will be symlinked to ~/.gitconfig.local
+# It overrides/extends the shared .gitconfig
+
+[user]
+	email = hendrikdegraaf@gmail.com
+	# No GPG signing on Arch (signingkey not set)

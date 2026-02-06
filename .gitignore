@@ -4,3 +4,6 @@ empty/
 
 # Environment variables and secrets (never commit!)
 **/env/env.local
+
+# macOS system files
+.DS_Store

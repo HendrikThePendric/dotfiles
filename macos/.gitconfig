@@ -1,0 +1,12 @@
+# ============================================================================
+# macOS Git Configuration - User-Specific Overrides
+# ============================================================================
+# This file will be symlinked to ~/.gitconfig.local
+# It overrides/extends the shared .gitconfig
+
+[user]
+	email = hendrik@dhis2.org
+	signingkey = F8B9AA805289DCA3226D7A3CD1AEFD7E58C3F967
+
+[commit]
+	gpgsign = true

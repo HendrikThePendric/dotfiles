@@ -1,11 +1,7 @@
 [user]
 	name = Hendrik de Graaf
-	# Email is machine-specific, set via environment variable
-	# Add to ~/.config/env/env.local: export GIT_USER_EMAIL="your@email.com"
-	email = ${GIT_USER_EMAIL}
-	# GPG signing key (optional), set via environment variable
-	# Add to ~/.config/env/env.local: export GPG_SIGNING_KEY="YOUR_KEY_ID"
-	signingkey = ${GPG_SIGNING_KEY}
+	# Email and signingkey are set in host-specific .gitconfig
+	# (e.g., macos/.gitconfig → ~/.gitconfig.local)
 
 [core]
     pager = delta
@@ -66,3 +62,7 @@
 [pull]
 	# Use rebase instead of merge when pulling
 	rebase = true
+
+[include]
+	# Include host-specific overrides (email, signing key, etc.)
+	path = ~/.gitconfig.local
