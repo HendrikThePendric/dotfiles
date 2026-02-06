@@ -1,0 +1,92 @@
+# ============================================================================
+# macOS Homebrew Package Manifest
+# ============================================================================
+# This file documents all packages required for the shared dotfiles to work
+# Install all packages: brew bundle install --file=macos/Brewfile
+# Update this file:     brew bundle dump --force --file=macos/Brewfile
+
+# ============================================================================
+# Core Shell & Terminal
+# ============================================================================
+
+# ZSH plugin manager (faster than oh-my-zsh)
+brew "antidote"
+
+# Modern, minimal, blazing-fast prompt
+brew "starship"
+
+# Smarter cd command that learns your habits
+brew "zoxide"
+
+# Command-line fuzzy finder
+brew "fzf"
+
+# Per-directory environment variable loader
+brew "direnv"
+
+# ============================================================================
+# Terminal Emulator & Multiplexer
+# ============================================================================
+
+# GPU-accelerated terminal emulator
+cask "kitty"
+
+# Terminal multiplexer
+brew "tmux"
+
+# Git status in tmux status bar
+brew "gitmux"
+
+# ============================================================================
+# Editor & Development Tools
+# ============================================================================
+
+# Modern vim-based editor
+brew "neovim"
+
+# Better cat with syntax highlighting
+brew "bat"
+
+# Modern git pager with syntax highlighting
+brew "git-delta"
+
+# Terminal UI for git
+brew "lazygit"
+
+# GitHub CLI
+brew "gh"
+
+# ============================================================================
+# Version Managers
+# ============================================================================
+
+# Python version management
+brew "pyenv"
+
+# Node.js (managed via nvm zsh plugin)
+# NVM is loaded via antidote plugin: lukechilds/zsh-nvm
+
+# ============================================================================
+# Additional Dependencies
+# ============================================================================
+
+# Required for LazyVim (neovim distribution)
+brew "ripgrep"
+brew "fd"
+brew "node"
+
+# JSON processor (useful for scripts)
+brew "jq"
+
+# ============================================================================
+# Optional but Recommended
+# ============================================================================
+
+# Modern ls replacement with colors and icons
+# brew "eza"
+
+# Better find alternative
+# brew "fd"
+
+# Git credential helper
+# brew "git-credential-manager"

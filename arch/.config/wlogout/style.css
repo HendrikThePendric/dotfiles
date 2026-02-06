@@ -1,0 +1,54 @@
+/* wlogout Catppuccin Mocha blue accent */
+window {
+  background-color: #1e1e2e;
+}
+
+button {
+  font-family: "CaskaydiaCove Nerd Font Propo";
+  font-size: 18px;
+  font-weight: bolder;
+  color: #a6adc8;
+  background-size: 60%;
+  background-repeat: no-repeat;
+  background-color: #313244;
+  border-color: #313244;
+  border-radius: 12px;
+  border-style: solid;
+  border-width: 8px;
+  transition: border-color 0.2s;
+}
+
+button:hover {
+  border-color: #a6adc8;
+}
+
+button:focus,
+button:active {
+  border-color: #89b4fa;
+}
+
+#lock {
+  background-image: url("icons/lock.png");
+  background-position: center 5px;
+}
+
+#logout {
+  background-image: url("icons/logout.png");
+  background-position: center 0;
+}
+
+#suspend {
+  background-image: url("icons/suspend.png");
+  background-position: center -5px;
+}
+
+#reboot {
+  background-image: url("icons/reboot.png");
+  background-position: center 2px;
+}
+
+#shutdown {
+  background-image: url("icons/shutdown.png");
+  background-position: center 0;
+  background-size: 55%;
+}

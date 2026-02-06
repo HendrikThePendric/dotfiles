@@ -1,0 +1,13 @@
+[Unit]
+Description=Kanata keyboard remapper
+Documentation=github.com
+
+[Service]
+Type=simple
+# The --nodelay flag removes the 2-second startup wait
+ExecStart=/usr/bin/kanata --cfg %h/.config/kanata/config.kbd --nodelay
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+

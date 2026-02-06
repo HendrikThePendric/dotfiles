@@ -1,0 +1,14 @@
+// By not specifying a 'copy_command', Zellij uses OSC 52 by default.
+// This works on macOS, Linux, and even over SSH without extra tools.
+// copy_command "pbcopy" 
+copy_clipboard "system"
+
+// Ensure we use our custom layout with the Mocha top bar
+default_layout "compact_mocha"
+
+// The rest of your shared config
+theme "catppuccin-mocha-custom"
+on_force_close "detach"
+// simplified_ui true
+pane_frames false
+

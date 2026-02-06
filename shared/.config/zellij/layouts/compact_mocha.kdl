@@ -1,0 +1,36 @@
+layout {
+    pane size=1 borderless=true {
+        plugin location="https://github.com/dj95/zjstatus/releases/download/v0.22.0/zjstatus.wasm" {
+            // 1. Clean Left Side: Mode + Session + Git
+            // Note: We use square brackets [] for that "Simplified" look
+            format_left  "{mode} #[fg=#b4befe,bold][{session}] {tabs}"
+            format_right "{command_git_branch}"
+            
+            // 2. The Git logic (The part you can't do with built-in)
+            command_git_branch_command     "bash -c 'br=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); if [ ${#br} -gt 25 ]; then echo \"${br:0:25}..\"; else echo \"$br\"; fi'"
+            command_git_branch_format      "#[fg=#cba6f7] {stdout} "
+            command_git_branch_interval    "10"
+            command_git_branch_rendermode  "static"
+
+            // Tab styling (Square/Simplified)
+            tab_normal              "#[fg=#6c7086] {name} "
+            tab_active              "#[fg=#1e1e2e,bg=#89b4fa,bold] {name} "
+
+            // Color-coded feedback for every state
+            mode_normal        "#[fg=#a6e3a1,bold] NORMAL "
+            mode_locked        "#[fg=#f38ba8,bold] LOCKED "
+            mode_pane          "#[fg=#eba0ac,bold]   PANE "
+            mode_tab           "#[fg=#fab387,bold]    TAB "
+            mode_resize        "#[fg=#f9e2af,bold] RESIZE "
+            mode_move          "#[fg=#94e2d5,bold]   MOVE "
+            mode_search        "#[fg=#f5e0dc,bold] SEARCH "
+            mode_session       "#[fg=#f5c2e7,bold]SESSION "
+
+        }
+    }
+    pane borderless=true
+
+    pane size=1 borderless=true {
+        plugin location="zellij:status-bar"
+    }
+}

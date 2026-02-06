@@ -1,0 +1,23 @@
+@theme "theme"
+
+configuration {
+  modi: "drun,window,filebrowser";
+  show-icons: true;
+  me-select-entry: "Control+MousePrimary";
+  me-accept-entry: "MousePrimary";
+  
+  /* Fuzzy matching - type "frf" to find "firefox" */
+  matching: "fuzzy";
+  
+  /* Search more fields in app launcher */
+  drun-match-fields: "name,generic,exec,categories,keywords";
+  
+  /* Custom prompt labels */
+  display-drun: "Apps";
+  display-window: "Windows";
+  display-filebrowser: "Files";
+  
+  filebrowser {
+    show-hidden: true;
+  }
+}

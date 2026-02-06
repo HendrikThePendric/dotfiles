@@ -1,0 +1,98 @@
+[
+    {
+        "layer": "top",
+        "position": "top",
+        "height": 23,
+        "spacing": 0,
+        "modules-left": [
+            "hyprland/workspaces"
+        ],
+        "modules-center": [
+            "clock"
+        ],
+        "modules-right": [
+            "cpu",
+            "memory",
+            "pulseaudio",
+            "tray",
+            "battery",
+            "custom/power"
+        ],
+        "custom/power": {
+            "format": "⏻",
+            "tooltip": true,
+            "tooltip-format": "Power menu",
+            "on-click": "$HOME/.config/scripts/wlogout-launch.sh",
+            "on-click-right": "systemctl poweroff",
+            "on-click-middle": "systemctl reboot"
+        },
+        "hyprland/workspaces": {
+            "format": "{icon}",
+            "on-click": "activate",
+            "format-icons": {
+                "1": "1",
+                "2": "2",
+                "3": "3",
+                "4": "4",
+                "5": "5",
+                "6": "6",
+                "7": "7",
+                "8": "8",
+                "9": "9",
+                "10": "10"
+            }
+        },
+        "clock": {
+            "format": " {:%a %d %b  %R}",
+            "tooltip-format": "{calendar}"
+        },
+        "battery": {
+            "interval": 10,
+            "states": {
+                "warning": 30,
+                "critical": 15
+            },
+            "format": "{icon} {capacity}%",
+            "format-charging": "{icon} {capacity}% ",
+            "format-plugged": "{icon} {capacity}% ",
+            "format-alt": "{icon} {time}",
+            "format-icons": [
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+        "tray": {
+            "icon-size": 15,
+            "spacing": 8
+        },
+        "cpu": {
+            "format": " {usage}%",
+            "tooltip": true
+        },
+        "memory": {
+            "format": " {}%"
+        },
+        "pulseaudio": {
+            "format": "{icon} {volume}%",
+            "format-bluetooth": "{icon} {volume}%",
+            "format-muted": "",
+            "format-icons": {
+                "headphone": "",
+                "hands-free": "",
+                "headset": "",
+                "phone": "",
+                "portable": "",
+                "car": "",
+                "default": [
+                    "",
+                    "",
+                    ""
+                ]
+            },
+            "on-click": "pavucontrol"
+        }
+    }
+]
