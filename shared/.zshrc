@@ -52,8 +52,8 @@ if [[ -n "$ANTIDOTE_DIR" && -f "$ANTIDOTE_DIR/antidote.zsh" ]]; then
     antidote load
 fi
 
-# opencode
-export PATH=/home/hendrik/.opencode/bin:$PATH
+# opencode - use $HOME instead of hardcoded username
+export PATH=$HOME/.opencode/bin:$PATH
 
 # ============================================================================
 # Plugin Configuration

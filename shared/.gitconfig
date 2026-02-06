@@ -1,9 +1,16 @@
 [user]
 	name = Hendrik de Graaf
-	email = hendrikdegraaf@gmail.com
+	# Email is machine-specific, set via environment variable
+	# Add to ~/.config/env/env.local: export GIT_USER_EMAIL="your@email.com"
+	email = ${GIT_USER_EMAIL}
+	# GPG signing key (optional), set via environment variable
+	# Add to ~/.config/env/env.local: export GPG_SIGNING_KEY="YOUR_KEY_ID"
+	signingkey = ${GPG_SIGNING_KEY}
 
 [core]
     pager = delta
+    editor = nvim
+    ignorecase = false
 
 [interactive]
     diffFilter = delta --color-only
@@ -47,3 +54,15 @@
 
 [diff]
     colorMoved = default
+
+[commit]
+	# Automatically sign commits with GPG (requires signingkey set)
+	gpgsign = true
+
+[push]
+	# Automatically set up remote tracking for new branches
+	autoSetupRemote = true
+
+[pull]
+	# Use rebase instead of merge when pulling
+	rebase = true
