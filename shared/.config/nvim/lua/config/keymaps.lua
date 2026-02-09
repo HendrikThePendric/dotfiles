@@ -11,7 +11,7 @@ local wk = require("which-key")
 -- Add custom terminal which-key group
 wk.add({ {
   "<leader>z",
-  group = "Terminal",
+  group = "terminal",
   icon = "",
   mode = { "n", "v" },
 } })
@@ -29,7 +29,7 @@ vim.keymap.del({ "n", "t" }, "<c-_>")
 -- Add OpenCode which-key group
 wk.add({ {
   "<leader>o",
-  group = "OpenCode",
+  group = "opencode",
   icon = "󱚢 ",
   mode = { "n", "v" },
 } })
