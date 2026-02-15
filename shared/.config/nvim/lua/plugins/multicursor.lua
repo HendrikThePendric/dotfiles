@@ -6,12 +6,20 @@ return {
     local wk = require("which-key")
     mc.setup()
 
-    -- Match-based cursor addition
-    vim.keymap.set({ "n", "x" }, "<leader>m", function()
+    -- Match-based cursor addition (normal mode only)
+    vim.keymap.set("n", "<leader>m", function()
       mc.matchAddCursor(1)
     end)
-    vim.keymap.set({ "n", "x" }, "<leader>M", function()
+    vim.keymap.set("n", "<leader>M", function()
       mc.matchAddCursor(-1)
+    end)
+
+    -- Visual mode: line start/end cursor addition
+    vim.keymap.set("x", "<leader>ma", function()
+      mc.appendVisual()
+    end)
+    vim.keymap.set("x", "<leader>mi", function()
+      mc.insertVisual()
     end)
 
     -- Toggle cursors on/off (hidden from which-key)
@@ -19,8 +27,11 @@ return {
 
     -- Which-key registration with icons
     wk.add({
-      { "<leader>m", desc = "multicursor next match", icon = "󰘎 ", mode = { "n", "x" } },
-      { "<leader>M", desc = "multicursor prev match", icon = "󰘎 ", mode = { "n", "x" } },
+      { "<leader>m", desc = "multicursor next match", icon = "󰘎 ", mode = "n" },
+      { "<leader>M", desc = "multicursor prev match", icon = "󰘎 ", mode = "n" },
+      { "<leader>m", group = "multicursor", icon = "󰘎 ", mode = "x" },
+      { "<leader>ma", desc = "append to line ends", icon = "󰘎 ", mode = "x" },
+      { "<leader>mi", desc = "insert at line starts", icon = "󰘎 ", mode = "x" },
     })
 
     -- Keymaps that only apply when multiple cursors are active
