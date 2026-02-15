@@ -39,13 +39,13 @@ wk.add({ {
 --------------
 
 -- Toggle comment on current line in Normal mode
-vim.keymap.set("n", "<c-/>", function()
+vim.keymap.set("n", "<A-/>", function()
   local line = vim.api.nvim_win_get_cursor(0)[1]
   require("mini.comment").toggle_lines(line, line)
 end, { silent = true, desc = "Toggle comment on current line" })
 
 -- Toggle comment on selection in Visual mode
-vim.keymap.set("v", "<c-/>", function()
+vim.keymap.set("v", "<A-/>", function()
   local start_pos = vim.fn.getpos("v")
   local end_pos = vim.fn.getpos(".")
 

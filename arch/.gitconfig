@@ -6,4 +6,7 @@
 
 [user]
 	email = hendrikdegraaf@gmail.com
-	# No GPG signing on Arch (signingkey not set)
+	signingkey = B77879D14949453B6D7A62E2B082D38C2097B0A6
+
+[commit]
+	gpgsign = true
