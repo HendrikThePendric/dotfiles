@@ -2,12 +2,33 @@
 
 set -euo pipefail
 
+# Cleanup function for temp files
+cleanup() {
+    local exit_code=$?
+    # Remove temp file if it exists
+    [[ -f "$TEMP_SYMLINKS_FILE" ]] && rm -f "$TEMP_SYMLINKS_FILE"
+    exit $exit_code
+}
+trap cleanup EXIT INT TERM
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+# Statistics tracking
+shared_files_count=0
+host_files_count=0
+symlinks_created=0
+symlinks_updated=0
+symlinks_unchanged=0
+backups_created=0
+orphans_removed=0
+empty_files_created=0
+directories_created=0
+empty_dirs_removed=0
 
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -91,6 +112,8 @@ create_symlink() {
     local target=$1
     local link=$2
     
+
+    
     # Always record in temp file
     echo "$link" >> "$TEMP_SYMLINKS_FILE"
     
@@ -98,7 +121,8 @@ create_symlink() {
     local link_dir=$(dirname "$link")
     if [[ ! -d "$link_dir" ]]; then
         mkdir -p "$link_dir"
-        echo -e "${BLUE}Created directory: $link_dir${NC}"
+        directories_created=$((directories_created + 1))
+        echo -e "${BLUE}+ Created directory: $link_dir${NC}"
     fi
     
     # Handle existing files/directories
@@ -107,71 +131,88 @@ create_symlink() {
         local current_target=$(readlink "$link")
         if [[ "$current_target" == "$target" ]]; then
             # Correct symlink already exists
-            echo -e "${BLUE}Symlink already exists: $link -> $target${NC}"
+            symlinks_unchanged=$((symlinks_unchanged + 1))
             return
         else
             # Symlink points to wrong target, remove and recreate
             rm "$link"
-            echo -e "${YELLOW}Updated symlink: $link${NC}"
-            echo -e "${YELLOW}  Old: $current_target${NC}"
-            echo -e "${YELLOW}  New: $target${NC}"
+            symlinks_updated=$((symlinks_updated + 1))
+            echo -e "${YELLOW}↻ Updated symlink: ${link#$HOME/}${NC}"
         fi
     elif [[ -e "$link" ]]; then
         # Existing file or directory, backup it
         local backup="$link.BAK"
         mv "$link" "$backup"
-        echo -e "${YELLOW}Backed up existing file: $link -> $backup${NC}"
+        backups_created=$((backups_created + 1))
+        echo -e "${YELLOW}💾 Backed up: ${link#$HOME/} -> ${backup#$HOME/}${NC}"
     fi
     
-    # Create symlink
-    ln -s "$target" "$link"
-    echo -e "${GREEN}Created symlink: $link -> $target${NC}"
+    # Create symlink if needed (not already correct)
+    if [[ ! -L "$link" ]] || [[ "$(readlink "$link")" != "$target" ]]; then
+        ln -s "$target" "$link"
+        if [[ $symlinks_updated -eq 0 && $backups_created -eq 0 ]]; then
+            symlinks_created=$((symlinks_created + 1))
+            echo -e "${GREEN}+ Added: ${link#$HOME/}${NC}"
+        fi
+    fi
 }
 
 # Remove orphaned symlinks (in old list but not in desired list)
 cleanup_orphaned_symlinks() {
     if [[ ! -f "$SYMLINKS_FILE" ]]; then
-        echo -e "${BLUE}No previous symlinks file found${NC}"
         return
     fi
     
     if [[ ! -f "$TEMP_SYMLINKS_FILE" ]]; then
-        echo -e "${YELLOW}Warning: No desired symlinks collected${NC}"
         return
     fi
     
-    echo -e "${BLUE}Checking for orphaned symlinks...${NC}"
-    
-    # Create associative array of desired symlinks for fast lookup
-    declare -A desired_set
-    while IFS= read -r symlink; do
-        desired_set["$symlink"]=1
-    done < "$TEMP_SYMLINKS_FILE"
-    
-    local removed_count=0
-    
     # Check each old symlink
     while IFS= read -r symlink; do
-        # If not in desired set, remove it
-        if [[ ! -v desired_set["$symlink"] ]]; then
+        # Check if symlink is in desired set using grep (bash 3.2 compatible)
+        if ! grep -Fxq "$symlink" "$TEMP_SYMLINKS_FILE" 2>/dev/null; then
             if [[ -L "$symlink" ]]; then
                 rm "$symlink"
-                echo -e "${YELLOW}Removed orphaned symlink: $symlink${NC}"
-                ((removed_count++))
+                orphans_removed=$((orphans_removed + 1))
+                echo -e "${RED}- Removed: ${symlink#$HOME/}${NC}"
+                # Clean up empty parent directories
+                cleanup_empty_parents "$symlink"
             elif [[ -e "$symlink" ]]; then
-                echo -e "${YELLOW}Warning: $symlink exists but is not a symlink, skipping${NC}"
+                echo -e "${YELLOW}⚠  Warning: ${symlink#$HOME/} exists but is not a symlink, skipping${NC}"
             fi
         fi
     done < "$SYMLINKS_FILE"
     
-    if [[ $removed_count -eq 0 ]]; then
-        echo -e "${BLUE}No orphaned symlinks found${NC}"
-    else
-        echo -e "${GREEN}Removed $removed_count orphaned symlink(s)${NC}"
-    fi
-    
     rm "$SYMLINKS_FILE"
-    echo -e "${GREEN}Cleanup complete${NC}"
+}
+
+# Clean up empty parent directories after removing a file/symlink
+cleanup_empty_parents() {
+    local path="$1"
+    
+    # Get parent directory
+    local parent_dir=$(dirname "$path")
+    
+    # Stop if we've reached HOME or root
+    while [[ "$parent_dir" != "$HOME" ]] && [[ "$parent_dir" != "/" ]] && [[ -n "$parent_dir" ]]; do
+        # Check if directory is empty (including hidden files)
+        if [[ -d "$parent_dir" ]] && [[ -z "$(ls -A "$parent_dir" 2>/dev/null)" ]]; then
+            # Directory is empty, remove it
+            rmdir "$parent_dir" 2>/dev/null
+            if [[ $? -eq 0 ]]; then
+                empty_dirs_removed=$((empty_dirs_removed + 1))
+                echo -e "${BLUE}🗑  Cleaned up empty directory: ${parent_dir#$HOME/}${NC}"
+                # Move up to parent's parent
+                parent_dir=$(dirname "$parent_dir")
+            else
+                # Couldn't remove directory (not empty or permission issue), stop
+                break
+            fi
+        else
+            # Directory is not empty, stop
+            break
+        fi
+    done
 }
 
 # Process files in a directory recursively
@@ -183,21 +224,101 @@ process_directory() {
         return
     fi
     
-    find "$base_dir" -type f -o -type l | while IFS= read -r file; do
+    # Write to temp file to avoid pipeline issues
+    local temp_file=$(mktemp)
+    find "$base_dir" \( -type f -o -type l \) > "$temp_file"
+    while IFS= read -r file; do
         # Get relative path from base_dir
         local rel_path="${file#$base_dir/}"
         echo "$rel_path"
-    done
+    done < "$temp_file"
+    rm -f "$temp_file"
+}
+
+# Print summary of operations
+print_summary() {
+    echo -e "\n${BLUE}=== Summary ===${NC}"
+    
+    # Files processed
+    echo -e "${GREEN}Files processed:${NC}"
+    echo -e "  Shared: $shared_files_count"
+    echo -e "  Host-specific: $host_files_count"
+    
+    # Symlink operations  
+    echo -e "${GREEN}Symlink operations:${NC}"
+    echo -e "  Created: $symlinks_created"
+    echo -e "  Updated: $symlinks_updated"
+    echo -e "  Unchanged: $symlinks_unchanged"
+    
+    # Cleanup operations
+    if [[ $orphans_removed -gt 0 ]] || [[ $empty_dirs_removed -gt 0 ]]; then
+        echo -e "${GREEN}Cleanup operations:${NC}"
+        [[ $orphans_removed -gt 0 ]] && echo -e "  Orphaned symlinks removed: $orphans_removed"
+        [[ $empty_dirs_removed -gt 0 ]] && echo -e "  Empty directories removed: $empty_dirs_removed"
+    fi
+    
+    # Other operations
+    if [[ $backups_created -gt 0 ]] || [[ $empty_files_created -gt 0 ]] || [[ $directories_created -gt 0 ]]; then
+        echo -e "${GREEN}Other operations:${NC}"
+        [[ $backups_created -gt 0 ]] && echo -e "  Backups created: $backups_created"
+        [[ $empty_files_created -gt 0 ]] && echo -e "  Empty files created: $empty_files_created"
+        [[ $directories_created -gt 0 ]] && echo -e "  Directories created: $directories_created"
+    fi
+    
+    # Total symlinks
+    if [[ -f "$SYMLINKS_FILE" ]]; then
+        local total_symlinks=$(wc -l < "$SYMLINKS_FILE" 2>/dev/null || echo "0")
+        echo -e "${GREEN}Total symlinks managed: $total_symlinks${NC}"
+    fi
+}
+
+# Print usage information
+print_usage() {
+    echo "Usage: $(basename "$0") [OPTIONS]"
+    echo
+    echo "Sync dotfiles to current host by creating symlinks."
+    echo
+    echo "Options:"
+    echo "  -h, --help     Show this help message"
+    echo "  -q, --quiet    Suppress summary output (still shows changes)"
+    echo
+    echo "By default, shows only changes (additions, updates, removals) and a summary."
 }
 
 # Main function
 main() {
-    echo -e "${BLUE}=== Dotfiles Symlink Setup ===${NC}\n"
+    local quiet_mode=0
+    
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                print_usage
+                exit 0
+                ;;
+            -q|--quiet)
+                quiet_mode=1
+                shift
+                ;;
+            *)
+                echo "Error: Unknown option $1" >&2
+                print_usage >&2
+                exit 1
+                ;;
+        esac
+    done
+    
+    if [[ $quiet_mode -eq 0 ]]; then
+        echo -e "${BLUE}=== Dotfiles Symlink Setup ===${NC}\n"
+    fi
     
     # Detect host
     CURRENT_HOST=$(detect_host)
     HOST_DIR="$REPO_ROOT/$CURRENT_HOST"
-    echo -e "${GREEN}Detected host: $CURRENT_HOST${NC}\n"
+    
+    if [[ $quiet_mode -eq 0 ]]; then
+        echo -e "${GREEN}Detected host: $CURRENT_HOST${NC}\n"
+    fi
     
     # Initialize temp symlinks file
     > "$TEMP_SYMLINKS_FILE"
@@ -206,24 +327,37 @@ main() {
     mkdir -p "$EMPTY_DIR"
     
     # Step 1: Process shared files
-    echo -e "${BLUE}Step 1: Processing shared files${NC}"
+    if [[ $quiet_mode -eq 0 ]]; then
+        echo -e "${BLUE}Step 1: Processing shared files${NC}"
+    fi
     if [[ -d "$SHARED_DIR" ]]; then
-        process_directory "$SHARED_DIR" "$CURRENT_HOST" | while IFS= read -r rel_path; do
+        # Use a temporary file to avoid pipeline subshell issues in zsh
+        local temp_file=$(mktemp)
+        process_directory "$SHARED_DIR" "$CURRENT_HOST" > "$temp_file"
+        while IFS= read -r rel_path; do
             local shared_file="$SHARED_DIR/$rel_path"
             local home_link="$HOME/$rel_path"
+            shared_files_count=$((shared_files_count + 1))
             create_symlink "$shared_file" "$home_link"
-        done
+        done < "$temp_file"
+        rm -f "$temp_file"
     else
         echo -e "${YELLOW}Warning: $SHARED_DIR does not exist${NC}"
     fi
     echo ""
     
     # Step 2: Process current host files
-    echo -e "${BLUE}Step 2: Processing $CURRENT_HOST files${NC}"
+    if [[ $quiet_mode -eq 0 ]]; then
+        echo -e "${BLUE}Step 2: Processing $CURRENT_HOST files${NC}"
+    fi
     if [[ -d "$HOST_DIR" ]]; then
-        process_directory "$HOST_DIR" "$CURRENT_HOST" | while IFS= read -r rel_path; do
+        # Use a temporary file to avoid pipeline subshell issues in zsh
+        local temp_file=$(mktemp)
+        process_directory "$HOST_DIR" "$CURRENT_HOST" > "$temp_file"
+        while IFS= read -r rel_path; do
             local host_file="$HOST_DIR/$rel_path"
             local shared_file="$SHARED_DIR/$rel_path"
+            host_files_count=$((host_files_count + 1))
             
             if [[ -e "$shared_file" || -L "$shared_file" ]]; then
                 # File exists in shared, this is a host-specific override
@@ -237,20 +371,24 @@ main() {
                     local_rel_path="${dir}/${filename}.local"
                 fi
                 local home_link="$HOME/$local_rel_path"
+                : "$local_rel_path"  # Suppress any accidental output
                 create_symlink "$host_file" "$home_link"
             else
                 # File is unique to this host
                 local home_link="$HOME/$rel_path"
                 create_symlink "$host_file" "$home_link"
             fi
-        done
+        done < "$temp_file"
+        rm -f "$temp_file"
     else
         echo -e "${YELLOW}Warning: $HOST_DIR does not exist${NC}"
     fi
     echo ""
     
     # Step 3: Process other hosts (create empty files where needed)
-    echo -e "${BLUE}Step 3: Processing other hosts (empty file generation)${NC}"
+    if [[ $quiet_mode -eq 0 ]]; then
+        echo -e "${BLUE}Step 3: Processing other hosts (empty file generation)${NC}"
+    fi
     for other_host in $(get_other_hosts "$CURRENT_HOST"); do
         local other_host_dir="$REPO_ROOT/$other_host"
         
@@ -258,7 +396,10 @@ main() {
             continue
         fi
         
-        process_directory "$other_host_dir" "$CURRENT_HOST" | while IFS= read -r rel_path; do
+        # Use a temporary file to avoid pipeline subshell issues in zsh
+        local temp_file=$(mktemp)
+        process_directory "$other_host_dir" "$CURRENT_HOST" > "$temp_file"
+        while IFS= read -r rel_path; do
             local other_host_file="$other_host_dir/$rel_path"
             local shared_file="$SHARED_DIR/$rel_path"
             local current_host_file="$HOST_DIR/$rel_path"
@@ -284,10 +425,12 @@ main() {
                 
                 if [[ ! -e "$empty_file" ]]; then
                     touch "$empty_file"
-                    echo -e "${BLUE}Created empty file: $empty_file${NC}"
+                        empty_files_created=$((empty_files_created + 1))
+                    echo -e "${BLUE}📄 Created empty file: ${empty_file#$REPO_ROOT/}${NC}"
                 fi
                 
                 local home_link="$HOME/$local_rel_path"
+                : "$local_rel_path"  # Suppress any accidental output
                 create_symlink "$empty_file" "$home_link"
             fi
             
@@ -309,27 +452,36 @@ main() {
                     
                     if [[ ! -e "$empty_file" ]]; then
                         touch "$empty_file"
-                        echo -e "${BLUE}Created empty file: $empty_file${NC}"
+                    empty_files_created=$((empty_files_created + 1))
+                        echo -e "${BLUE}📄 Created empty file: ${empty_file#$REPO_ROOT/}${NC}"
                     fi
                     
                     local home_link="$HOME/$rel_path"
                     create_symlink "$empty_file" "$home_link"
                 fi
             fi
-        done
+        done < "$temp_file"
+        rm -f "$temp_file"
     done
     echo ""
     
     # Step 4: Remove orphaned symlinks
-    echo -e "${BLUE}Step 4: Cleanup${NC}"
+    if [[ $quiet_mode -eq 0 ]]; then
+        echo -e "${BLUE}Step 4: Cleanup${NC}"
+    fi
     cleanup_orphaned_symlinks
-    echo ""
+    if [[ $quiet_mode -eq 0 ]]; then
+        echo ""
+    fi
     
     # Replace old symlinks file with new one
     mv "$TEMP_SYMLINKS_FILE" "$SYMLINKS_FILE"
     
-    echo -e "${GREEN}=== Setup complete! ===${NC}"
-    echo -e "${BLUE}Total symlinks: $(wc -l < "$SYMLINKS_FILE")${NC}"
+    # Print summary
+    if [[ $quiet_mode -eq 0 ]]; then
+        print_summary
+        echo -e "${GREEN}✓ Setup complete${NC}"
+    fi
 
     # Reload Hyprland config if on arch
     if [[ "$CURRENT_HOST" == "arch" ]]; then
