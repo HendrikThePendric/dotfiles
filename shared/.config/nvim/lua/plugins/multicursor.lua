@@ -20,9 +20,15 @@ return {
     -- Visual mode: line start/end cursor addition
     vim.keymap.set("x", "<leader>ma", function()
       mc.appendVisual()
+      vim.schedule(function()
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+      end)
     end)
     vim.keymap.set("x", "<leader>mi", function()
       mc.insertVisual()
+      vim.schedule(function()
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+      end)
     end)
 
     -- Toggle cursors on/off (hidden from which-key)
