@@ -6,6 +6,9 @@ return {
     local wk = require("which-key")
     mc.setup()
 
+    -- Custom cursor color
+    vim.api.nvim_set_hl(0, "MultiCursorCursor", { fg = "#eba0ac", reverse = true })
+
     -- Match-based cursor addition (normal mode only)
     vim.keymap.set("n", "<leader>m", function()
       mc.matchAddCursor(1)
@@ -37,8 +40,8 @@ return {
     -- Keymaps that only apply when multiple cursors are active
     mc.addKeymapLayer(function(layerSet)
       -- Navigate between cursors
-      layerSet({ "n", "x" }, "<left>", mc.prevCursor)
-      layerSet({ "n", "x" }, "<right>", mc.nextCursor)
+      layerSet({ "n", "x" }, "<C-left>", mc.prevCursor)
+      layerSet({ "n", "x" }, "<C-right>", mc.nextCursor)
 
       -- Delete current cursor
       layerSet({ "n", "x" }, "<leader>x", mc.deleteCursor)
