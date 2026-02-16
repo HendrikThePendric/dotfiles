@@ -18,3 +18,13 @@ vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpo
 -- ============================================================================
 -- Use dedicated pyenv virtualenv to avoid installing pynvim in every Python version
 vim.g.python3_host_prog = vim.fn.expand("~/.pyenv/versions/neovim/bin/python")
+
+-- ============================================================================
+-- MCP Integration
+-- ============================================================================
+-- Enable MCP socket for OpenCode integration
+-- This creates a socket at /tmp/nvim that external tools can connect to
+if vim.fn.has('nvim') == 1 then
+  local socket_path = '/tmp/nvim'
+  vim.fn.serverstart(socket_path)
+end
