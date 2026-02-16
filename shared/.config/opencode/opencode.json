@@ -7,7 +7,10 @@
       "type": "local",
       "command": ["npx", "-y", "@modelcontextprotocol/server-github"],
       "enabled": true,
-      "timeout": 10000
+      "timeout": 10000,
+      "environment": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_API_KEY}"
+      }
     },
     "grep": {
       "type": "remote",
@@ -29,11 +32,18 @@
     }
   },
   "tools": {
-    // Disable potentially noisy MCP tools globally, enable per-project as needed
+    // Disable MCP tools globally by default, enable per-project as needed
     "github_*": false,
     "grep_*": false,
     "context7_*": false,
     "neovim_*": false
+  },
+  "permission": {
+    // Deny MCP tools globally by default, allow per-project as needed
+    "github_*": "deny",
+    "grep_*": "deny",
+    "context7_*": "deny",
+    "neovim_*": "deny"
   }
 }
 
