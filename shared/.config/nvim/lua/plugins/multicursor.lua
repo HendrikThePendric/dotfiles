@@ -18,6 +18,12 @@ return {
     end)
 
     -- Visual mode: line start/end cursor addition
+    vim.keymap.set("x", "<leader>mm", function()
+      mc.matchAddCursor(1)
+    end)
+    vim.keymap.set("x", "<leader>mM", function()
+      mc.matchAddCursor(-1)
+    end)
     vim.keymap.set("x", "<leader>ma", function()
       mc.appendVisual()
       vim.schedule(function()
@@ -41,16 +47,18 @@ return {
       { "<leader>m", group = "multicursor", icon = "󰘎 ", mode = "x" },
       { "<leader>ma", desc = "append to line ends", icon = "󰘎 ", mode = "x" },
       { "<leader>mi", desc = "insert at line starts", icon = "󰘎 ", mode = "x" },
+      { "<leader>mm", desc = "multicursor next match", icon = "󰘎 ", mode = "x" },
+      { "<leader>mM", desc = "multicursor prev match", icon = "󰘎 ", mode = "x" },
     })
 
     -- Keymaps that only apply when multiple cursors are active
     mc.addKeymapLayer(function(layerSet)
       -- Navigate between cursors
-      layerSet({ "n", "x" }, "<C-left>", mc.prevCursor)
-      layerSet({ "n", "x" }, "<C-right>", mc.nextCursor)
+      layerSet({ "n", "x" }, "<A-left>", mc.prevCursor)
+      layerSet({ "n", "x" }, "<A-right>", mc.nextCursor)
 
       -- Delete current cursor
-      layerSet({ "n", "x" }, "<leader>x", mc.deleteCursor)
+      layerSet({ "n", "x" }, "<A-x>", mc.deleteCursor)
 
       -- Repeat matchAddCursor with just 'm'/'M' (no leader needed)
       layerSet({ "n", "x" }, "m", function()
