@@ -58,3 +58,23 @@ vim.keymap.set("v", "<A-/>", function()
 
   require("mini.comment").toggle_lines(start_line, end_line)
 end, { silent = true, desc = "Toggle comment on selection" })
+
+------------
+-- POPUPS --
+------------
+
+-- Single key to dismiss ALL popups while typing
+vim.keymap.set("i", "<A-Space>", function()
+  -- 1. Close blink.cmp completion menu
+  local blink_ok, blink = pcall(require, "blink.cmp")
+  if blink_ok and blink then
+    blink.hide()
+  end
+
+  -- 2. Close all floating windows (LSP hover, diagnostics, etc.)
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_config(win).relative ~= "" then
+      pcall(vim.api.nvim_win_close, win, true)
+    end
+  end
+end, { desc = "Dismiss all popups (completion + floating windows)" })
