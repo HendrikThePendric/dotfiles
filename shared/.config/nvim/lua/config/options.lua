@@ -23,8 +23,15 @@ vim.g.python3_host_prog = vim.fn.expand("~/.pyenv/versions/neovim/bin/python")
 -- MCP Integration
 -- ============================================================================
 -- Enable MCP socket for OpenCode integration
--- This creates a socket at /tmp/nvim that external tools can connect to
+-- This creates a dynamic socket path based on project directory that external tools can connect to
 if vim.fn.has('nvim') == 1 then
-  local socket_path = '/tmp/nvim'
+  -- Generate dynamic socket path using external script
+  local function get_socket_path()
+    local script_path = vim.fn.expand('~/.config/scripts/nvim-socket-path.sh')
+    local socket_path = vim.fn.system(script_path):gsub('\n$', '')
+    return socket_path
+  end
+  
+  local socket_path = get_socket_path()
   vim.fn.serverstart(socket_path)
 end

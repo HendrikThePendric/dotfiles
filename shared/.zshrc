@@ -55,6 +55,9 @@ fi
 # opencode - use $HOME instead of hardcoded username
 export PATH=$HOME/.opencode/bin:$PATH
 
+# opencode with dynamic Neovim socket path
+alias opencode='NVIM_SOCKET_PATH="$(~/.config/scripts/nvim-socket-path.sh)" opencode'
+
 # ============================================================================
 # Plugin Configuration
 # ============================================================================
