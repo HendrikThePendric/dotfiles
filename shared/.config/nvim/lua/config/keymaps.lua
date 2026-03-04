@@ -70,11 +70,26 @@ vim.keymap.set("i", "<A-Space>", function()
   if blink_ok and blink then
     blink.hide()
   end
-
-  -- 2. Close all floating windows (LSP hover, diagnostics, etc.)
+  -- 2. Close diagnostic and LSP popups while avoiding Noice dialogs
+  -- Note: No direct API exists to close diagnostic floating windows, so we identify
+  -- them by window configuration. This targets popups with typical diagnostic/LSP
+  -- settings while skipping Noice dialogs (which contain "noice" in buffer name).
   for _, win in ipairs(vim.api.nvim_list_wins()) do
-    if vim.api.nvim_win_get_config(win).relative ~= "" then
-      pcall(vim.api.nvim_win_close, win, true)
+    local config = vim.api.nvim_win_get_config(win)
+    if config.relative ~= "" then
+      local buf = vim.api.nvim_win_get_buf(win)
+      local buf_name = vim.api.nvim_buf_get_name(buf)
+
+      -- Skip Noice dialogs (identified by buffer name containing "noice")
+      if not string.find(buf_name:lower(), "noice") then
+        -- Target diagnostic/LSP popups based on window configuration:
+        -- - focusable = false (can't receive focus, typical for popups)
+        -- - zindex = 50 (common for diagnostic popups)
+        -- - zindex = 100 (common for LSP hover popups)
+        if config.focusable == false or config.zindex == 50 or config.zindex == 100 then
+          pcall(vim.api.nvim_win_close, win, true)
+        end
+      end
     end
   end
 end, { desc = "Dismiss all popups (completion + floating windows)" })
