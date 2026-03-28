@@ -22,14 +22,14 @@ vim.keymap.del({ "n" }, "<leader>fT")
 vim.keymap.del({ "n", "t" }, "<c-/>")
 vim.keymap.del({ "n", "t" }, "<c-_>")
 
---------------
--- OPENCODE --
---------------
+--------
+-- AI --
+--------
 
--- Add OpenCode which-key group
+-- Add AI which-key group
 wk.add({ {
-  "<leader>o",
-  group = "opencode",
+  "<leader>a",
+  group = "AI",
   icon = "󱚢 ",
   mode = { "n", "v" },
 } })
