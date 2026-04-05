@@ -158,15 +158,3 @@ alias nuke-nodemodules="find . -name 'node_modules' -type d -prune -exec rm -rf 
 # ============================================================================
 
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-
-# Fix blank line issue in tmux
-# This prevents extra newlines when starting new terminals or clearing screen
-if [[ -n $TMUX ]]; then
-    # Clear the screen without adding extra newlines
-    function clear-screen() {
-        printf '\033[2J\033[H'
-    }
-    
-    # Override clear command in tmux
-    alias clear='clear-screen'
-fi
