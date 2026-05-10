@@ -31,6 +31,17 @@
       "environment": {
         "NVIM_SOCKET_PATH": "{env:NVIM_SOCKET_PATH}"
       }
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--executablePath=/usr/bin/chromium"
+      ],
+      "enabled": true,
+      "timeout": 30000
     }
   },
   "tools": {
