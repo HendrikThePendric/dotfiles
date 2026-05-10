@@ -13,7 +13,7 @@
         "modules-right": [
             "cpu",
             "memory",
-            "pulseaudio",
+            "custom/volume",
             "tray",
             "battery",
             "custom/power"
@@ -75,23 +75,11 @@
         "memory": {
             "format": " {}%"
         },
-        "pulseaudio": {
-            "format": "{icon} {volume}%",
-            "format-bluetooth": "{icon} {volume}%",
-            "format-muted": "",
-            "format-icons": {
-                "headphone": "",
-                "hands-free": "",
-                "headset": "",
-                "phone": "",
-                "portable": "",
-                "car": "",
-                "default": [
-                    "",
-                    "",
-                    ""
-                ]
-            },
+        "custom/volume": {
+            "exec": "$HOME/.config/scripts/waybar-volume.sh",
+            "return-type": "json",
+            "format": "{}",
+            "interval": 1,
             "on-click": "pavucontrol"
         }
     }
