@@ -15,6 +15,7 @@ return {
     { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff", mode = "n" },
     { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff", mode = "n" },
   },
+  lazy = false,
   opts = {
     terminal = {
       provider = "none",

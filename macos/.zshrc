@@ -71,3 +71,17 @@ export DHIS2_HOME="$HOME/.config/dhis2_home"
 export OLLAMA_API_BASE="http://127.0.0.1:11434"
 export OLLAMA_NUM_CTX=8192      # Context window size - safe for M1 Max
 export OLLAMA_NUM_THREAD=8      # CPU threads - balanced for 10-core CPU
+
+
+# Claude Code: remove IDE lock files whose PID is no longer running
+claude-clear-ide() {
+  local count=0
+  for f in ~/.claude/ide/*.lock(N); do
+    local pid=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['pid'])" "$f" 2>/dev/null)
+    if [[ -z "$pid" ]] || ! kill -0 "$pid" 2>/dev/null; then
+      rm -f "$f"
+      ((count++))
+    fi
+  done
+  echo "Removed $count stale IDE lock file(s)"
+}
