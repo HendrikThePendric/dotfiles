@@ -1,12 +1,6 @@
 return {
   "folke/snacks.nvim",
   opts = {
-    styles = {
-      lazygit = {
-        width = 0.999,
-        height = 0.999,
-      },
-    },
     indent = {
       animate = {
         enabled = false,
@@ -26,6 +20,25 @@ return {
     },
     picker = {
       enabled = true,
+      layout = {
+        preset = "default",
+        layout = {
+          box = "horizontal",
+          width = 0.95,
+          height = 0.95,
+          {
+            box = "vertical",
+            border = true,
+            title = "{title} {live} {flags}",
+            width = 0.3,
+            min_width = 25,
+            max_width = 55,
+            { win = "input", height = 1, border = "bottom" },
+            { win = "list", border = "none" },
+          },
+          { win = "preview", title = "{preview}", border = true },
+        },
+      },
       sources = {
         projects = {
           enabled = false,
