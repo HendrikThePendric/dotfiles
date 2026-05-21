@@ -121,6 +121,27 @@
 - Ensure tests pass and new tests are added
 - Verify compliance with project guidelines
 
+## Available Tools & MCP Servers
+
+All MCP tools are **disabled globally** (`false` + `deny`). Projects opt in via their local `opencode.json`.
+
+### MCP Servers (opt-in per project)
+- **github** — GitHub API (issues, PRs, repos, search). Requires `GITHUB_API_KEY` env var.
+- **grep** — Code search across public GitHub repos (`grep_*` tools).
+- **context7** — Up-to-date library documentation lookup (`context7_*` tools).
+- **neovim** — Neovim editor integration. Requires `NVIM_SOCKET_PATH` env var.
+- **chrome-devtools** — Browser automation (navigate, click, snapshot, screenshot). Runs Chromium automatically.
+
+### Plugins (always active)
+- **superpowers** — Additional capabilities from obra/superpowers.
+- **opencode-shell-strategy** — Prevents hangs from TTY-dependent shell commands.
+- **opencode-dynamic-context-pruning** — Prunes stale tool outputs to save tokens.
+- **opencode-notificator** — Desktop notifications on session completion/errors.
+- **opencode-background-agents** — Async background agent delegation.
+
+### Custom Agents
+- **reviewer** — Read-only code review subagent. Use for PR review, bug analysis, or consistency checks. Never makes edits.
+
 ## Maintenance & Operations
 
 ### Code Maintenance

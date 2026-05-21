@@ -1,6 +1,15 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "autoupdate": true,
+  "model": "deepseek/deepseek-v4-pro",
+  "small_model": "deepseek/deepseek-v4-flash",
+  "plugin": [
+    "superpowers@git+https://github.com/obra/superpowers.git",
+    "opencode-shell-strategy",
+    "opencode-dynamic-context-pruning",
+    "opencode-notificator",
+    "opencode-background-agents"
+  ],
   "mcp": {
     "github": {
       "type": "local",
@@ -49,14 +58,42 @@
     "github_*": false,
     "grep_*": false,
     "context7_*": false,
-    "neovim_*": false
+    "neovim_*": false,
+    "chrome_devtools_*": false
   },
   "permission": {
     // Deny MCP tools globally by default, allow per-project as needed
     "github_*": "deny",
     "grep_*": "deny",
     "context7_*": "deny",
-    "neovim_*": "deny"
+    "neovim_*": "deny",
+    "chrome_devtools_*": "deny"
+  },
+  "agent": {
+    "explore": {
+      "description": "Read-only codebase exploration and context gathering",
+      "model": "deepseek/deepseek-v4-flash",
+      "permission": {
+        "write": "deny",
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "general": {
+      "model": "deepseek/deepseek-v4-flash",
+      "steps": 15
+    },
+    "reviewer": {
+      "description": "Code review and analysis — read files and suggest improvements without making changes",
+      "mode": "subagent",
+      "model": "deepseek/deepseek-v4-flash",
+      "permission": {
+        "write": "deny",
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "You are a code reviewer. Read and analyze code changes, identify bugs, suggest improvements, and check for consistency with project conventions. Do NOT make any edits — only report findings."
+    }
   }
 }
 
