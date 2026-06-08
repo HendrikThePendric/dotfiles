@@ -43,8 +43,8 @@ setopt PUSHD_IGNORE_DUPS
 # Arch Linux:            /usr/share/zsh-antidote
 # Ubuntu:                /usr/share/zsh-antidote
 
-# NVM: don't auto-use on startup (requires .nvmrc + cached LTS aliases)
-export NVM_NO_USE=true
+# NVM: auto-switch node version on directory change (respects .nvmrc)
+export NVM_AUTO_USE=true
 
 # Set up cache directory for oh-my-zsh plugins
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
