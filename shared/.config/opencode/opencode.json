@@ -80,7 +80,7 @@
       }
     },
     "general": {
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "deepseek/deepseek-v4-pro",
       "steps": 15
     },
     "reviewer": {
