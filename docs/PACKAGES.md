@@ -90,7 +90,7 @@ Terminal configs use **Nerd Fonts** for icons and glyphs:
 - **macOS:** Regular Cascadia Code + Symbols Nerd Font (via symbol_map in kitty)
   - Install Symbols Nerd Font from: https://github.com/ryanoasis/nerd-fonts/releases
   - Download: "NerdFontsSymbolsOnly.zip"
-- **Ubuntu:** Install via [Nerd Fonts releases](https://github.com/ryanoasis/nerd-fonts/releases)
+- **Debian:** Install via [Nerd Fonts releases](https://github.com/ryanoasis/nerd-fonts/releases)
 
 > ⚠️ Font names differ by OS! Host-specific kitty configs handle this.
 
@@ -136,9 +136,9 @@ Package lists maintained in [arch/.config/scripts/](arch/.config/scripts/):
 - [packages.txt](arch/.config/scripts/packages.txt) - Official packages
 - [aur-packages.txt](arch/.config/scripts/aur-packages.txt) - AUR packages
 
-### Ubuntu
+### Debian
 
-Antidote path should be set to `/usr/share/zsh-antidote` in `ubuntu/.zshrc.env`.
+Antidote path should be set to `$HOME/.antidote` in `debian/.zshrc.env`.
 
 ## Verification
 

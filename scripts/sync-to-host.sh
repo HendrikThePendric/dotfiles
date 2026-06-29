@@ -73,8 +73,8 @@ detect_host() {
         echo "macos"
     elif [[ -f /etc/os-release ]]; then
         . /etc/os-release
-        if [[ "$ID" == "ubuntu" ]]; then
-            echo "ubuntu"
+        if [[ "$ID" == "debian" ]]; then
+            echo "debian"
         elif [[ "$ID" == "arch" ]]; then
             echo "arch"
         else
@@ -89,13 +89,13 @@ detect_host() {
 
 # Get all hosts
 get_all_hosts() {
-    echo "macos ubuntu arch"
+    echo "macos debian arch"
 }
 
 # Get other hosts (excluding current)
 get_other_hosts() {
     local current_host=$1
-    local all_hosts=(macos ubuntu arch)
+    local all_hosts=(macos debian arch)
     local other_hosts=()
     
     for host in "${all_hosts[@]}"; do

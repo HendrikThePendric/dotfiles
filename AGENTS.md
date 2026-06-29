@@ -2,11 +2,11 @@
 
 ## Repository Overview
 
-This is a dotfiles management repository using a symlink-based approach to manage configurations across multiple systems (macos, ubuntu, arch).
+This is a dotfiles management repository using a symlink-based approach to manage configurations across multiple systems (macos, debian, arch).
 
 **Supported Systems:**
 - **macos** - MacOS work setup
-- **ubuntu** - Ubuntu system  
+- **debian** - Debian system  
 - **arch** - Arch Linux with Hyprland
 
 ## Key Concepts
@@ -16,7 +16,7 @@ This is a dotfiles management repository using a symlink-based approach to manag
 dotfiles/
 ├── shared/           # Configurations used across all systems
 ├── macos/            # MacOS-specific configurations
-├── ubuntu/           # Ubuntu-specific configurations
+├── debian/           # Debian-specific configurations
 ├── arch/             # Arch Linux-specific configurations
 ├── scripts/          # Management scripts (sync-to-host.sh)
 ├── empty/            # Generated empty files (gitignored)
@@ -24,7 +24,7 @@ dotfiles/
 └── BAK/              # Backup of old configs
 ```
 
-**Key principle:** All host directories (`shared/`, `macos/`, `ubuntu/`, `arch/`) use **identical directory structures and filenames**. This consistency is what makes the system work.
+**Key principle:** All host directories (`shared/`, `macos/`, `debian/`, `arch/`) use **identical directory structures and filenames**. This consistency is what makes the system work.
 
 ### Configuration Patterns
 
@@ -45,7 +45,7 @@ The location of a file determines its behavior:
 
 ### When Working with This Repository
 
-1. **Always maintain identical directory structures** across `shared/`, `macos/`, `ubuntu/`, and `arch/` directories
+1. **Always maintain identical directory structures** across `shared/`, `macos/`, `debian/`, and `arch/` directories
 2. **Follow the configuration patterns** described above when adding new files
 3. **Use the sync script** after making changes: `./scripts/sync-to-host.sh`
 4. **Preserve symlink relationships** - files are symlinked to home directory
@@ -76,7 +76,7 @@ The location of a file determines its behavior:
 
 ### Script Usage
 - Main sync script: `./scripts/sync-to-host.sh`
-- Automatically detects current host (macos/ubuntu/arch)
+- Automatically detects current host (macos/debian/arch)
 - Creates appropriate symlinks based on configuration patterns
 - Updates `.symlinks.txt` tracking file
 

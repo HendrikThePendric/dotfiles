@@ -6,7 +6,7 @@
 source ~/.zshrc
 
 # Find nvim in PATH (now that PATH is loaded from .zshrc)
-# This works across macOS (Homebrew), Ubuntu, and Arch Linux
+# This works across macOS (Homebrew), Debian, and Arch Linux
 if command -v nvim &> /dev/null; then
     exec nvim "$@"
 else

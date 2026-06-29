@@ -41,7 +41,7 @@ setopt PUSHD_IGNORE_DUPS
 # macOS (Apple Silicon): /opt/homebrew/share/antidote
 # macOS (Intel):         /usr/local/share/antidote
 # Arch Linux:            /usr/share/zsh-antidote
-# Ubuntu:                /usr/share/zsh-antidote
+# Debian:                $HOME/.antidote
 
 # NVM: auto-switch node version on directory change (respects .nvmrc)
 export NVM_AUTO_USE=true

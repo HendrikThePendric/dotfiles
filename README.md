@@ -1,6 +1,6 @@
 # Dotfiles
 
-Personal dotfiles managed via a symlink-based approach, supporting multiple operating systems (Arch Linux with Hyprland, macOS, and Ubuntu) while maintaining a unified configuration workflow.
+Personal dotfiles managed via a symlink-based approach, supporting multiple operating systems (Arch Linux with Hyprland, macOS, and Debian) while maintaining a unified configuration workflow.
 
 ## Philosophy
 
@@ -24,7 +24,7 @@ shared/.config/nvim/ → ~/.config/nvim/
 
 For configurations that need platform-specific customization, the system supports a `.local` suffix pattern:
 
-- Host-specific files (in `arch/`, `macos/`, or `ubuntu/`) that **also exist** in `shared/` are symlinked with a `.local` extension
+- Host-specific files (in `arch/`, `macos/`, or `debian/`) that **also exist** in `shared/` are symlinked with a `.local` extension
 - The shared configuration then imports or includes the `.local` version
 - This allows shared defaults with host-specific extensions
 
@@ -105,7 +105,7 @@ dotfiles/
 │   └── .config/
 │       └── kitty/
 │           └── kitty.conf  # macOS-specific font/key settings
-├── ubuntu/          # Ubuntu specific
+├── debian/          # Debian specific
 ├── scripts/
 │   └── sync-to-host.sh  # Main sync script
 └── docs/
@@ -140,13 +140,13 @@ This configuration leverages:
 
 1. Create the base configuration in `shared/`
 2. Add an include or source directive for the `.local` version
-3. Create the host-specific override in `arch/`, `macos/`, or `ubuntu/`
+3. Create the host-specific override in `arch/`, `macos/`, or `debian/`
 4. Run the sync script
 5. Commit and push
 
 ### For Platform-Exclusive Features
 
-1. Add the file to the appropriate host directory (`arch/`, `macos/`, or `ubuntu/`)
+1. Add the file to the appropriate host directory (`arch/`, `macos/`, or `debian/`)
 2. Run the sync script
 3. Commit and push
 
