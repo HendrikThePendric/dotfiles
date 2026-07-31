@@ -13,10 +13,14 @@ set $ipc noctalia msg
 # Let sway detect outputs; configure per monitor if needed
 # output * bg #000000 solid_color
 
+# --- Cursor ---
+seat * xcursor_theme catppuccin-mocha-lavender-cursors 24
+
 # --- Input ---
 input type:keyboard {
     xkb_layout us
     xkb_variant altgr-intl
+    xkb_options caps:escape
     repeat_delay 250
     repeat_rate 35
 }
@@ -54,6 +58,10 @@ bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
 
 # --- Move windows ---
 bindsym $mod+Shift+h move left
@@ -72,6 +80,8 @@ bindsym $mod+7 workspace number 7
 bindsym $mod+8 workspace number 8
 bindsym $mod+9 workspace number 9
 bindsym $mod+0 workspace number 10
+bindsym $mod+Tab workspace next
+bindsym $mod+Shift+Tab workspace prev
 
 bindsym $mod+Shift+1 move container to workspace number 1; workspace number 1
 bindsym $mod+Shift+2 move container to workspace number 2; workspace number 2
@@ -89,13 +99,17 @@ bindsym $mod+Ctrl+h resize shrink width 5 px or 5 ppt
 bindsym $mod+Ctrl+j resize grow height 5 px or 5 ppt
 bindsym $mod+Ctrl+k resize shrink height 5 px or 5 ppt
 bindsym $mod+Ctrl+l resize grow width 5 px or 5 ppt
+bindsym $mod+Ctrl+Left resize shrink width 5 px or 5 ppt
+bindsym $mod+Ctrl+Down resize grow height 5 px or 5 ppt
+bindsym $mod+Ctrl+Up resize shrink height 5 px or 5 ppt
+bindsym $mod+Ctrl+Right resize grow width 5 px or 5 ppt
 
 # --- Terminal ---
 bindsym $mod+Return exec $term
 
 # --- Reload / Exit ---
 bindsym $mod+Shift+c reload
-bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit Sway?' -b 'Yes' 'swaymsg exit'
+bindsym $mod+Shift+e exec $ipc panel-toggle session
 
 # --- Screenshots ---
 bindsym Print exec grim - | wl-copy
@@ -119,10 +133,10 @@ exec noctalia --daemon
 
 # Idle management
 exec swayidle -w \
-    timeout 300 'swaylock -f -c 000000' \
+    timeout 300 'noctalia msg session lock' \
     timeout 600 'swaymsg "output * power off"' \
     resume 'swaymsg "output * power on"' \
-    before-sleep 'swaylock -f -c 000000'
+    before-sleep 'noctalia msg session lock'
 
 include /etc/sway/config.d/*
 

@@ -21,6 +21,11 @@ thickness = 23
 icon_size = 48
 position = "bottom"
 
+[lockscreen]
+blur_intensity = 0.59999999999999998
+blurred_desktop = true
+tint_intensity = 0.20000000000000001
+
 [lockscreen_widgets]
 enabled = false
 schema_version = 2
@@ -62,13 +67,17 @@ settings_show_advanced = true
 [theme]
 builtin = "Catppuccin"
 community_palette = "Oxocarbon"
+mode = "dark"
 wallpaper_scheme = "m3-content"
 
-[wallpaper.default]
-path = "/home/hendrik/Pictures/Wallpapers/space-piano.png"
+[wallpaper]
+directory = "/home/hendrik/pictures/wallpapers"
 
-[wallpaper.last]
-path = "/home/hendrik/Pictures/Wallpapers/space-piano.png"
+    [wallpaper.default]
+    path = "/home/hendrik/pictures/wallpapers/space-piano.png"
 
-[wallpaper.monitors.eDP-1]
-path = "/home/hendrik/Pictures/Wallpapers/space-piano.png"
+    [wallpaper.last]
+    path = "/home/hendrik/pictures/wallpapers/space-piano.png"
+
+    [wallpaper.monitors.eDP-1]
+    path = "/home/hendrik/pictures/wallpapers/space-piano.png"
