@@ -16,6 +16,13 @@
 # Core Settings
 # ============================================================================
 
+# Use gpg-agent as SSH agent (caches passphrases)
+if command -v gpgconf &> /dev/null; then
+    export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+fi
+
+
+
 # Set XDG base directory
 export XDG_CONFIG_HOME="$HOME/.config"
 
