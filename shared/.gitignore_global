@@ -35,3 +35,7 @@ Temporary Items
 .vscode/
 .idea/
 *.iml
+
+**/.claude/settings.local.json
+
+**/.claude/settings.local.json
