@@ -1,8 +1,7 @@
 git:
-  pagers:
+  diffRenderers:
     - colorArg: always
-      pager: delta --dark --paging=never
-
+      command: delta --dark --paging=never
 gui:
   commandLogSize: 16
   statusPanelView: allBranchesLog
@@ -27,7 +26,6 @@ gui:
       - "#cdd6f4"
     searchingActiveBorderColor:
       - "#f9e2af"
-
   authorColors:
     "*": "#b4befe"
 promptToReturnFromSubprocess: false
