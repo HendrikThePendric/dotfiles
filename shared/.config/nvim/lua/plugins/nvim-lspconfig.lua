@@ -9,7 +9,7 @@ return {
       vtsls = {
         settings = {
           vtsls = {
-            autoUseWorkspaceTsdk = false,
+            autoUseWorkspaceTsdk = true,
           },
         },
       },
