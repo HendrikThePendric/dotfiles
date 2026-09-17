@@ -42,7 +42,8 @@ return {
       sources = {
         projects = {
           enabled = false,
-          dev = "~/projects",
+          -- Project roots differ per host: ~/Apps on macOS, ~/projects on Linux.
+          dev = { "~/Apps", "~/projects" },
           patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "package.json", "Makefile", "pyproject.toml" },
           recent = false,
         },
