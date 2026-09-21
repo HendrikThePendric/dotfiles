@@ -39,3 +39,9 @@ Temporary Items
 **/.claude/settings.local.json
 
 **/.claude/settings.local.json
+
+# AI sandbox artifacts
+.pnpm-store/
+.playwright-cli/
+.claude/skills/playwright-cli/
+docs/superpowers/
