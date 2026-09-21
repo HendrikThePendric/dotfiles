@@ -13,8 +13,9 @@ return {
       return ""
     end
 
-    -- Git branch in lualine b and moving c to b did not look nice so we just keep c and clear branch
+    -- Git branch back in lualine b, followed by the multicursor indicator
     opts.sections.lualine_b = {
+      { "branch", separator = { right = "" } },
       {
         multicursor_status,
         color = { bg = "#fab387", fg = "#11111b" },
