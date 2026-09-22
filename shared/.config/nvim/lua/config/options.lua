@@ -14,12 +14,6 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
 -- ============================================================================
--- Python Provider
--- ============================================================================
--- Use dedicated pyenv virtualenv to avoid installing pynvim in every Python version
-vim.g.python3_host_prog = vim.fn.expand("~/.pyenv/versions/neovim/bin/python")
-
--- ============================================================================
 -- Host-specific options
 -- ============================================================================
 -- Source host-specific options if present (e.g. to start the nvim RPC project server on Linux hosts)
