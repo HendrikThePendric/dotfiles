@@ -18,8 +18,15 @@ vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpo
 -- ============================================================================
 -- Host-specific options
 -- ============================================================================
--- Source host-specific options if present (e.g. to start the nvim RPC project server on Linux hosts)
+-- Source host-specific options if present
 local local_opts = vim.fn.stdpath("config") .. "/lua/config/options.lua.local"
 if vim.fn.filereadable(local_opts) == 1 then
   dofile(local_opts)
 end
+
+-- ============================================================================
+-- RPC server
+-- ============================================================================
+-- Start the nvim RPC server for the OpenCode agent (no-op otherwise). Named
+-- socket on regular hosts, static socket in the sandbox — see util/rpc.lua.
+require("util.rpc").setup()
