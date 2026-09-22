@@ -4,7 +4,9 @@
 -- ============================================================================
 -- Clipboard
 -- ============================================================================
--- Sync with system clipboard (uses wl-copy on Wayland, xclip/xsel on X11)
+-- Sync with system clipboard. Host: wl-copy/xclip/pbcopy. Sandbox: headless with
+-- no provider tools, so Neovim's built-in OSC 52 (relayed through tmux → terminal)
+-- is used instead.
 vim.opt.clipboard = "unnamedplus"
 
 -- ============================================================================
