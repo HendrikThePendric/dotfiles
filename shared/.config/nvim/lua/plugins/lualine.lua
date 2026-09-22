@@ -13,8 +13,17 @@ return {
       return ""
     end
 
-    -- Git branch in lualine b and moving c to b did not look nice so we just keep c and clear branch
+    -- Git branch only in sandboxes. On the host the branch shows in the tmux
+    -- status bar instead, so we keep lualine lean; in a sandbox each tmux window
+    -- is a different branch, so the branch belongs in nvim here.
     opts.sections.lualine_b = {
+      {
+        "branch",
+        cond = function()
+          return vim.env.IS_SANDBOX ~= nil
+        end,
+        separator = { right = "" },
+      },
       {
         multicursor_status,
         color = { bg = "#fab387", fg = "#11111b" },

@@ -1,3 +1,34 @@
+-- The AI assistant plugin, selected once here rather than per-host.
+-- See util/agent.lua for how the agent is chosen (AIS_AGENT in sandboxes,
+-- OS detection on regular hosts).
+
+if require("util.agent").name() == "claude" then
+  return {
+    "coder/claudecode.nvim",
+    dependencies = {
+      { "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
+    },
+    keys = {
+      { "<leader>as", "<cmd>ClaudeCodeSend<cr>", desc = "Send selection to Claude", mode = "v" },
+      {
+        "<leader>as",
+        "<cmd>ClaudeCodeTreeAdd<cr>",
+        desc = "Add file to Claude",
+        ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+      },
+      { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer", mode = "n" },
+      { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff", mode = "n" },
+      { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff", mode = "n" },
+    },
+    lazy = false,
+    opts = {
+      terminal = {
+        provider = "none",
+      },
+    },
+  }
+end
+
 return {
   "NickvanDyke/opencode.nvim",
   dependencies = {
@@ -18,8 +49,8 @@ return {
       provider = {
         enabled = "tmux",
         tmux = {
-          options = "-h",         -- horizontal split
-          focus = false,          -- keep focus in Neovim
+          options = "-h",
+          focus = false,
           allow_passthrough = false,
         },
       },
