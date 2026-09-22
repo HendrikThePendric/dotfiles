@@ -13,9 +13,17 @@ return {
       return ""
     end
 
-    -- Git branch back in lualine b, followed by the multicursor indicator
+    -- Git branch only in sandboxes. On the host the branch shows in the tmux
+    -- status bar instead, so we keep lualine lean; in a sandbox each tmux window
+    -- is a different branch, so the branch belongs in nvim here.
     opts.sections.lualine_b = {
-      { "branch", separator = { right = "" } },
+      {
+        "branch",
+        cond = function()
+          return vim.env.IS_SANDBOX ~= nil
+        end,
+        separator = { right = "" },
+      },
       {
         multicursor_status,
         color = { bg = "#fab387", fg = "#11111b" },
