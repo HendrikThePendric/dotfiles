@@ -6,8 +6,7 @@
   "plugin": [
     "superpowers@git+https://github.com/obra/superpowers.git",
     "opencode-shell-strategy",
-    "opencode-dynamic-context-pruning",
-    "opencode-notificator"
+    "opencode-dynamic-context-pruning"
   ],
   "mcp": {
     "github": {

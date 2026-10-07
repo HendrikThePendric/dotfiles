@@ -136,7 +136,6 @@ All MCP tools are **disabled globally** (`false` + `deny`). Projects opt in via 
 - **superpowers** — Additional capabilities from obra/superpowers.
 - **opencode-shell-strategy** — Prevents hangs from TTY-dependent shell commands.
 - **opencode-dynamic-context-pruning** — Prunes stale tool outputs to save tokens.
-- **opencode-notificator** — Desktop notifications on session completion/errors.
 - **opencode-background-agents** — Async background agent delegation.
 
 ### Custom Agents
