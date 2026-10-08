@@ -2,6 +2,9 @@
 .symlinks.txt
 empty/
 
+# XDG runtime state (auto-written by apps like noctalia)
+**/.local/state/
+
 # Environment variables and secrets (never commit!)
 **/env/env.local
 
