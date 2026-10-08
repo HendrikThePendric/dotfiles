@@ -13,6 +13,10 @@ set $ipc noctalia msg
 # Let sway detect outputs; configure per monitor if needed
 # output * bg #000000 solid_color
 
+# Internal eDP panel has a failing flex cable (flashes/power-cycles).
+# Disabled until hardware is repaired; remove this line to re-enable.
+output eDP-1 disable
+
 # --- Cursor ---
 seat * xcursor_theme catppuccin-mocha-lavender-cursors 24
 
