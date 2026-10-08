@@ -1,0 +1,50 @@
+[bar.default]
+end = [
+    "tray",
+    "notifications",
+    "clipboard",
+    "network",
+    "bluetooth",
+    "volume",
+    "brightness",
+    "battery",
+    "control-center",
+    "session"
+]
+margin_edge = 0
+margin_ends = 0
+radius = 0
+shadow = false
+thickness = 23
+
+[dock]
+icon_size = 48
+position = "bottom"
+
+[lockscreen]
+blur_intensity = 0.6
+blurred_desktop = true
+tint_intensity = 0.2
+
+[plugins]
+enabled = [ "noctalia/timer", "noctalia/wallhaven" ]
+
+[shell]
+app_icon_colorize = true
+font_family = "JetBrainsMono Nerd Font"
+settings_show_advanced = true
+
+    [shell.screen_corners]
+    size = 73
+
+[theme]
+builtin = "Catppuccin"
+community_palette = "Oxocarbon"
+mode = "dark"
+wallpaper_scheme = "m3-content"
+
+[wallpaper]
+directory = "/home/hendrik/pictures/wallpapers"
+
+    [wallpaper.default]
+    path = "/home/hendrik/pictures/wallpapers/space-piano.png"
